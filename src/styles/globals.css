@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Gideon+Roman&family=Prompt:ital,wght@1,500&display=swap');
+
+
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -11,8 +14,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-start-rgb: 32,71,56;
+    --background-end-rgb: 9,31,25;
   }
 }
 
@@ -24,4 +27,19 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+}
+
+
+:root {
+  --de-york-50: #effaf5;
+  --de-york-100: #d9f2e5;
+  --de-york-200: #b5e5cf;
+  --de-york-300: #6ec7a3;
+  --de-york-400: #52b590;
+  --de-york-500: #309975;
+  --de-york-600: #217a5e;
+  --de-york-700: #1a624c;
+  --de-york-800: #174e3f;
+  --de-york-900: #144035;
+  --de-york-950: #0a241e;
 }
