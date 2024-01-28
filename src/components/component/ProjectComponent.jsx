@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const ProjectComponent = ()  => {
   return (
-    (<section className="w-full py-12 md:py-24 lg:py-32">
+    (<section className="w-full">
       <div
         className="container grid max-w-5xl justify-center gap-3 px-4 text-center md:gap-7 md:px-3 lg:grid-cols-2 lg:text-left xl:max-w-6xl xl:gap-9">
         <div className="space-y-4">

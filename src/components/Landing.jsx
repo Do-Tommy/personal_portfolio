@@ -21,9 +21,9 @@ return (
                     </div>
                 </div>
                 <div className='lg:mr-15 px-5'>
-                <h1 className='py-4 md:shrink-0 text-6xl text-text font-Prompt font-bold'>
+                <h1 className='py-4 md:shrink-0 text-6xl text-text font-Prompt font-bold overflow-hidden'>
                     Hey I&apos;m Tommy 
-                    <div className='animate-sideways absolute h-[10px] mt-2 md:max-w-[40%] sm:max-w-[30%] bg-secondary border-2 border-pink-400'></div>
+                    <div className='animate-sideways h-[10px] mt-2 bg-secondary border-2 border-pink-400'></div>
                 </h1>
                 <p className='text-3xl font-bold text-secondary font-Gideon Roman'>
                     Software Engineer
