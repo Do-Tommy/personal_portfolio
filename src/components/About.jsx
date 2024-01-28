@@ -9,10 +9,10 @@ function About() {
       </h1>
       <div className='px-10 mx-4 py-10'>
         <p className='font-prompt text-lg tracking-wide leading-10 text-white '>
-          I was born and raised in San Jose, California. The incredible hub of technology that is the Silicon Valley. My whole life 
+          {`I was born and raised in San Jose, California. The incredible hub of technology that is the Silicon Valley. My whole life 
           I have been fascinated and interested about technology. From early on days of the internet customizing MySpace using html and
           css to scripting in video games like Ragnarok online. Tinkering with technology is something I've always enjoyed doing and
-          programming has further helped me with this. 
+          programming has further helped me with this.`}
           
         </p>
       </div>
