@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React from 'react'
 
 function About() {
@@ -8,16 +9,16 @@ function About() {
         About me
       </h1>
       <div className='px-10 mx-4 py-10'>
-        <p className='font-prompt text-lg tracking-wide leading-10 text-white '>
+        <p className='font-prompt text-lg tracking-wide leading-10 text-text '>
           {`I was born and raised in San Jose, California. The incredible hub of technology that is the Silicon Valley. My whole life 
           I have been fascinated and interested about technology. From early on days of the internet customizing MySpace using html and
-          css to scripting in video games like Ragnarok online. Tinkering with technology is something I've always enjoyed doing and
+          css to scripting in video games like Ragnarok online. Tinkering with technology is something I&apos;  ve always enjoyed doing and
           programming has further helped me with this.`}
           
         </p>
       </div>
-      <div className='flex justify-center mb-100 max-w-[100%]'>
-        <img className='rounded-lg m-auto' src='https://media.california.com/media/_versions_jpg/articles/silicon_valley_hero__3992x2992____v1222x580__.jpg' alt='siliconValley'></img>
+      <div className='flex justify-center mb-100' >
+          <Image width={500} height={500} className='rounded-lg m-auto' src='https://media.california.com/media/_versions_jpg/articles/silicon_valley_hero__3992x2992____v1222x580__.jpg' alt='siliconValley'></Image>
       </div>
       
       </section>

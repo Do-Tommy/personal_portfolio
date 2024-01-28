@@ -5,16 +5,26 @@ import Landing from '@/components/Landing'
 import About from '@/components/About'
 import Skills from '@/components/Skills'
 import Projects from '@/components/Projects'
+import useDarkMode from '@/hooks/darkMode'
+import { DarkModeToggle } from '@/components/DarkModeToggle'
+
+
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  
+
+
   return (
     <div> 
       <Header/>
+      <DarkModeToggle/>
       <Landing/>
       <About/>
       <Skills/>
       <Projects/>
-    </div>
-  )
-}
+      
+      </div>
+)}
+
+

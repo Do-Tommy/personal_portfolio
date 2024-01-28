@@ -1,5 +1,4 @@
 import React from 'react'
-import Carousel from '@/hooks/Carousel'
 import useMediaQuery from '@/hooks/useMediaQuery';
 import {
   Tabs,
@@ -8,6 +7,7 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
+import Image from 'next/image';
 
 
 
@@ -26,8 +26,8 @@ const Skills = () => {
               <li>Javascript</li>
               <li>Kotlin</li>
             </ul>
-            
             ,
+      sideVal: 'border-t-[9px]'
       
     },
     {
@@ -41,6 +41,7 @@ const Skills = () => {
               <li>Nextjs</li>
               <li>MySQL</li>
             </ul>,
+      sideVal: 'border-r-[9px]'
     },
     {
       label: "Tools",
@@ -52,6 +53,7 @@ const Skills = () => {
               <li>Wireshark</li>
               <li>Android Studio</li>
             </ul>,
+      sideVal: 'border-b-[9px]'
     },
     
     
@@ -59,22 +61,25 @@ const Skills = () => {
   
   return (
     <div id="skills" className='md:flex items-center justify-center md:justify-center md:items-center my-28'>
-      <section id="tabcontainer"className='w-full  md:max-w-7xl' >
-      <h1 className='text-6xl flex justify-center md:justify-start md:ml-16 mb-6 font-bold text-secondary'>
+       <section id="tabcontainer"className='w-full md:max-w-7xl' > 
+       <h1 className='text-6xl flex justify-center md:ml-[3.5rem] md:justify-start  mb-6 font-bold text-textcolor'>
         Skills
-      </h1>
-      <div className={(isDesktop ? "flex " : ' ') + "justify-center"} >
-      <Tabs value="html"  orientation={isDesktop ? "vertical" : 'horizontal'} className='min-w-[51%] '>
-        <TabsHeader className={"mt-4 bg-secondary " +(isDesktop ? "flex-col flex-wrap" : 'flex-row ')}>
+        
+        </h1>
+        
+      <div className={(isDesktop ? "flex " : ' ') + "justify-start mx-7"} >
+      
+      <Tabs value="languages"  orientation={isDesktop ? "vertical" : 'horizontal'} className='min-w-[45%] mx-6'>
+        <TabsHeader className={"mt-4 bg-transparent " +(isDesktop ? "flex-col flex-wrap" : 'flex-row ')}>
           {data.map(({ label, value }) => ( 
-            <Tab className='text-secondarytext hover:text-primarytext md:text-3xl font-bold' key={value} value={value}>
+            <Tab className='text-secondary  hover:text-primary md:text-3xl sm:text-md sm:font-bold font-bold ' key={value} value={value}>
               {label}
             </Tab>
           ))}
         </TabsHeader>
-        <TabsBody>
-          {data.map(({ value, desc }) => (
-            <TabPanel  key={value} value={value}  className="py-5 text-white">
+        <TabsBody className='h-[21em]'>
+          {data.map(({value,desc,sideVal }) => (
+            <TabPanel  key={value} value={value}  className={`py-5 text-text ${sideVal} border-accent`} >
               {desc}
             </TabPanel>
             
@@ -82,18 +87,19 @@ const Skills = () => {
           
         </TabsBody>
       </Tabs>
-      <div className='flex justify-center'>
+      <div className='flex justify-center my-8'>
           
-      <img 
+      <Image 
+        alt='languages'
         className='rounded-lg flex justify-center' 
-        width={500} 
-        length={500} 
+        width={500}
+        height={500}
         src='https://bairesdev.mo.cloudinary.net/blog/2022/01/programming-languages-1.jpg?tx=w_3840,q_auto'>
 
-      </img>
+      </Image>
       </div>
       </div>
-      </section>
+      </section> 
 
       
   

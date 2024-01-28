@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@material-tailwind/react": "^2.1.1",
+    "@radix-ui/react-navigation-menu": "^1.1.4",
+    "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "autoprefixer": "10.4.14",
     "bootstrap": "^5.3.1",
@@ -28,5 +30,8 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.1",
     "tailwindcss-animate": "^1.0.6"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0"
   }
 }

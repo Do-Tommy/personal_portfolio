@@ -3,7 +3,7 @@ const withMT = require("@material-tailwind/react/utils/withMT");
 
 
 module.exports = withMT({
-  darkMode: ["class"],
+  darkMode: 'class',
   content: [
     './pages/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
@@ -19,15 +19,13 @@ module.exports = withMT({
       },
     },
     colors: {
-
-        textcolor: '#d9f2e5',
-        background: "#243d34",
-        primary: '#4ce0cf',
-        secondary: "#0c3318",
-        accent: "#d76088",
-        
-        
-    },
+      'text': 'var(--text)',
+      'background': 'var(--background)',
+      'primary': 'var(--primary)',
+      'secondary': 'var(--secondary)',
+      'accent': 'var(--accent)',
+     },
+     
     extend: {
       keyframes: {
         "accordion-down": {
@@ -38,10 +36,15 @@ module.exports = withMT({
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        sideways: {
+          "0%" : {width: '0%'},
+          "100%": { width: '95%', opacity: '0' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'sideways' : 'sideways 1s 0.5s infinite linear',
       },
     },
   },
