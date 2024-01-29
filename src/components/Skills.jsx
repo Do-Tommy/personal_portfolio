@@ -62,7 +62,7 @@ const Skills = () => {
   return (
     <div id="skills" className='md:flex items-center justify-center md:justify-center md:items-center my-28'>
        <section id="tabcontainer"className='w-full md:max-w-7xl' > 
-       <h1 className='text-6xl flex justify-center md:ml-[3.5rem] md:justify-start  mb-6 font-bold text-textcolor'>
+       <h1 className='text-6xl flex justify-center md:ml-[3.5rem] md:justify-start  mb-6 font-bold text-text'>
         Skills
         
         </h1>

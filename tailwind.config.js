@@ -40,11 +40,14 @@ module.exports = withMT({
           "0%" : {width: '0%'},
           "100%": { width: '95%', opacity: '0' },
         },
+        
+        
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        'sideways' : 'sideways 1s 0.5s infinite linear',
+        'sideways' : 'sideways 3s 1s infinite linear',
+        
       },
     },
   },

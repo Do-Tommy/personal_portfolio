@@ -1,20 +1,28 @@
 import React from 'react'
 import useDarkMode from '@/hooks/darkMode'
+import {useEffect, useState} from "react"
+
+export const useHasMounted = () => {
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  return hasMounted
+}
 
 export const DarkModeToggle = () => {
     const [colorTheme, setTheme] = useDarkMode();
+    
 
   return (
     <div className='group fixed bottom-0 right-0 p-2  flex items-end justify-end w-24 h-24  '>
     <div className=' shadow-xl flex items-center justify-center p-3 rounded-full z-50 absolute bg-accent '>
-        {colorTheme === "light" ? (
-        <div onClick={() => setTheme("light")}>
-        <LightIcon />
-        </div>
+        {useHasMounted && colorTheme === "light" ? (
+        <LightIcon onClick={() => setTheme("light")}/>
         ) : (
-          <div onClick={() => setTheme("dark")}>
-        <MoonIcon />
-        </div>
+        <MoonIcon onClick={() => setTheme("dark")}/>  
       )
     }
     </div>
@@ -23,8 +31,11 @@ export const DarkModeToggle = () => {
 }
 
 
+
+
 function LightIcon(props) {
     return (
+      <div>
       <svg
         {...props}
         xmlns="http://www.w3.org/2000/svg"
@@ -36,6 +47,7 @@ function LightIcon(props) {
         color="#000"
         viewBox="0 0 24 24"
       >
+        
         <path
           stroke="#000"
           strokeLinecap="round"
@@ -43,11 +55,13 @@ function LightIcon(props) {
           d="M21 2l-1 1M3 2l1 1M21 16l-1-1M3 16l1-1M9 18h6M10 21h4M12 3C8 3 5.952 4.95 6 8c.023 1.487.5 2.5 1.5 3.5S9 13 9 15h6c0-2 .5-2.5 1.5-3.5h0c1-1 1.477-2.013 1.5-3.5.048-3.05-2-5-6-5z"
         ></path>
       </svg>
+      </div>
     );
   }
   
   function MoonIcon(props) {
     return (
+      <div>
       <svg
         {...props}
         xmlns="http://www.w3.org/2000/svg"
@@ -71,5 +85,6 @@ function LightIcon(props) {
           d="M14.5 8.51l.01-.011M10 17a2 2 0 100-4 2 2 0 000 4z"
         ></path>
       </svg>
+      </div>
     );
   }
