@@ -1,7 +1,7 @@
 import React from 'react'
 import useDarkMode from '@/hooks/darkMode'
 import {useEffect, useState} from "react"
-
+import useMediaQuery from '@/hooks/useMediaQuery'
 export const useHasMounted = () => {
   const [hasMounted, setHasMounted] = useState(false)
 
@@ -14,11 +14,11 @@ export const useHasMounted = () => {
 
 export const DarkModeToggle = () => {
     const [colorTheme, setTheme] = useDarkMode();
-    
+    const isDesktop =  useMediaQuery("(min-width:768px)");
 
   return (
-    <div className='group fixed bottom-0 right-0 p-2  flex items-end justify-end w-24 h-24  '>
-    <div className=' shadow-xl flex items-center justify-center p-3 rounded-full z-50 absolute bg-accent '>
+    <div className={'group fixed right-0 p-2 flex justify-center w-24 h-24 z-50 ' + (isDesktop ? 'bottom-0 ' : '' )}>
+    <div className=' shadow-xl flex items-center justify-center p-3 rounded-full absolute bg-accent '>
         {useHasMounted && colorTheme === "light" ? (
         <LightIcon onClick={() => setTheme("light")}/>
         ) : (

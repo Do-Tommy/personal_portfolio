@@ -51,7 +51,7 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 CardFooter.displayName = "CardFooter"
 
 const CardImage = React.forwardRef(({ className, ...props }, ref) => (
-  <img ref={ref} className={`h-auto w-full ${className}`} {...props} />
+  <img ref={ref} className={`h-auto w-auto ${className}`} {...props} />
 ));
 CardImage.displayName = "CardImage";
 

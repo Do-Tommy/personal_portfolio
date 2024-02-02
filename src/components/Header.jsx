@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-scroll';
 import { useState } from 'react';
-import { AiFillCloseCircle} from 'react-icons/ai'
+import { RxHamburgerMenu, RxCrossCircled  } from "react-icons/rx";
+
 import useMediaQuery from '@/hooks/useMediaQuery';
 import Image from 'next/image';
 
@@ -37,7 +38,12 @@ const Header = () => {
             </div>
             
             <div onClick={()=> setActive(!active)} className='text-3xl absolute right-8 top-7 cursor-pointer md:hidden text-primarytext'>
-            <AiFillCloseCircle/>
+            
+            {active ? (
+            <RxCrossCircled className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <RxHamburgerMenu className="h-6 w-6" aria-hidden="true" />
+          )}
             </div>
             
             <ul className={`md:flex bg-secondary md:bg-opacity-0 md:items-center md:pb-0 pb-10 absolute md:static md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 transition-all delay-100 duration-300 ${active ? 'bottom-10 opacity-100':'bottom-[-490px]'} md:opacity-100 opacity-0`}>

@@ -10,8 +10,8 @@ const ProjectComponent = ({project})  => {
       <div
         className="container grid justify-center text-center lg:text-left xl:max-w-6xl ">
        
-        <div className="my-8">
-          <Card className='bg-primary transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 '>
+        <div className="my-8 ">
+          <Card className=' bg-primary transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 max-w-md '>
             <CardHeader className="flex flex-row items-center gap-4">
               <FrameIcon className="w-8 h-8" />
               <div className="grid gap-1">
