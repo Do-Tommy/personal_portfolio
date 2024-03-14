@@ -28,7 +28,7 @@ return (
                 <p className='text-3xl font-bold text-secondary font-Gideon Roman'>
                     Software Engineer
                 </p>
-                <p className='text-lg mt-5 mb-7 max-w-[70%] m-auto text-text'>
+                <p className='text-lg mt-5 mb-7 m-auto text-text'>
                     New grad looking to build tools for the future. Striving everyday to create something new.
                 </p>
                 <Link 

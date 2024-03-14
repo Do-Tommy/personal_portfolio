@@ -1,6 +1,6 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+import Image from "next/image"
 
 const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
@@ -51,7 +51,7 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 CardFooter.displayName = "CardFooter"
 
 const CardImage = React.forwardRef(({ className, ...props }, ref) => (
-  <img ref={ref} className={`h-auto w-auto ${className}`} {...props} />
+  <Image alt='ref' ref={ref} width={0} height={0} sizes="100vw"  className={`h-auto w-screen ${className}`} {...props} />
 ));
 CardImage.displayName = "CardImage";
 

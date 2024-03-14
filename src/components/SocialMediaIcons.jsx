@@ -26,6 +26,7 @@ const SocialMediaIcons = () => {
       <a
         className="hover:opacity-50 transition duration-500"
         href="https://open.spotify.com/user/hjvo7uwfnnzw822obtp4db5il"
+        title='Spotify'
         target="_blank"
         rel="noreferrer"
       >
