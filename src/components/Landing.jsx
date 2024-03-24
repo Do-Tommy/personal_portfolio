@@ -34,7 +34,7 @@ return (
                 <Link 
                     className="bg-accent text-text -sm py-2 px-7 font-semibold
                     hover:bg-blue hover:text-secondary transition duration-500 "
-                    href='/'>
+                    href='/contact'>
                     Contact me
                 </Link>
                 <div className='flex justify-center'>
