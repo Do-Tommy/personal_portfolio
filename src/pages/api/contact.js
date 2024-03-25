@@ -42,8 +42,8 @@ export default async function handler(req,res) {
     const mailobject = await sendNodemailer(messageData);
     if(!mailobject) {
         res.status(400)
-        res.json({error:['unable to send mail']})
-        return
+        return res.json({error:['unable to send mail']})
+        
     }
 
     res.status(200).json({message:'Success'})
