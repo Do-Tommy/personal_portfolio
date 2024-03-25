@@ -15,11 +15,17 @@ import {
 import { Input } from "@/components/ui/input"
 import ReCAPTCHA from 'react-google-recaptcha'
 import { contactSchema } from './api/contact'
+import { Textarea } from '@/components/ui/textarea';
 import { yupResolver } from "@hookform/resolvers/yup"
+import { Button } from '@/components/ui/button';
+import useMediaQuery from '@/hooks/useMediaQuery';
+
 
 const Contact = () => {
   const [isSubmitted, setSubmitted] = useState(false)
+  const [isSubmitting, setSubmitting] = useState(false)
   const recaptchaRef = React.createRef();
+  const isDesktop =  useMediaQuery("(min-width:768px)");
 
   const form = useForm({
     resolver: yupResolver(contactSchema),
@@ -33,7 +39,7 @@ const Contact = () => {
 
 
   const onSubmit = async (values) => {
-
+    setSubmitting(true)
     const token = await recaptchaRef.current.executeAsync();
     // Do something with the form values.
     try {
@@ -59,7 +65,7 @@ const Contact = () => {
     catch(err) {
       console.error(err)
     }
-    
+    setSubmitting(false)
   }
 
   return isSubmitted ? (
@@ -72,16 +78,16 @@ const Contact = () => {
       
     </div>
     )  : (
-    <div className='grid justify-center my-6 mt-32'>
+    <div className={'grid my-6 mt-32 ' + (isDesktop ? 'max-w-[40%] mx-20' : 'min-w-[40%] mx-12' ) }>
     <h1 className='text-2xl font-extrabold my-6 border-b-2 border-black border-opacity-75'>Lets get in touch!</h1>
   <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <FormField
         control={form.control}
         name="username"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>First and Last Name</FormLabel>
+            <FormLabel className='font-semibold text-text'>First and Last Name</FormLabel>
             <FormControl>
               <Input placeholder="John Doe" {...field} />
             </FormControl>
@@ -94,7 +100,7 @@ const Contact = () => {
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Email</FormLabel>
+            <FormLabel className='font-semibold text-text'>Email</FormLabel>
             <FormControl>
               <Input 
               {...form.register('email',{required:'Email  is required'})}
@@ -111,9 +117,9 @@ const Contact = () => {
         name="message"
         render={({ field }) => (
           <FormItem  className='grid'>
-            <FormLabel>Message</FormLabel>
+            <FormLabel className='font-semibold text-text' >Message</FormLabel>
             <FormControl>
-            <textarea
+            <Textarea
                 placeholder="Reach out to me!"
                 className="resize-none rounded-md"
                 {...form.register(
@@ -127,7 +133,14 @@ const Contact = () => {
           </FormItem>
         )}
       />
-      <button type="submit">Submit</button>
+      
+        {isSubmitting ? (
+          <Button disabled variant="outline">Loading</Button>
+        ) :(
+          <Button variant="outline" type="Submit">Submit</Button>
+        )
+        }
+      
       <ReCAPTCHA
       ref={recaptchaRef}
       size="invisible"

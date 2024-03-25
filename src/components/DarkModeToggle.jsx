@@ -17,7 +17,7 @@ export const DarkModeToggle = () => {
     const isDesktop =  useMediaQuery("(min-width:768px)");
 
   return (
-    <div className={'group fixed right-0 p-2 flex justify-center w-24 h-24 z-50 ' + (isDesktop ? 'bottom-0 ' : '' )}>
+    <div className={'group fixed right-0 p-2 flex justify-center w-24 h-24 z-50 ' + (isDesktop ? 'bottom-16 ' : 'bottom-16' )}>
     <div className=' shadow-xl flex items-center justify-center p-3 rounded-full absolute bg-accent '>
         {useHasMounted && colorTheme === "light" ? (
         <LightIcon onClick={() => setTheme("light")}/>
