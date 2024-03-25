@@ -1,3 +1,4 @@
+'use client'
 
 import React from 'react'
 import { useForm } from "react-hook-form"
@@ -39,7 +40,7 @@ const Contact = () => {
 
   const onSubmit = async (values) => {
     setSubmitting(true)
-    //const token = await recaptchaRef.current.executeAsync();
+    const token = await recaptchaRef.current.executeAsync();
     // Do something with the form values.
     try {
       const res = await fetch("/api/contact", {
@@ -144,11 +145,11 @@ const Contact = () => {
         )
         }
       
-      {/* <ReCAPTCHA
+      <ReCAPTCHA
       ref={recaptchaRef}
       size="invisible"
       sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-      /> */}
+      />
     </form>
   </Form>
   </div>)
