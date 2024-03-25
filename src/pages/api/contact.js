@@ -1,3 +1,4 @@
+import { info } from 'autoprefixer';
 import {object,string} from 'yup'
 const nodemailer = require("nodemailer");
 
@@ -69,7 +70,8 @@ async function validateContactForm(formValues) {
         return validForm
         
     } catch (error) {
-        return false   
+
+        return error   
     }
     
 
@@ -113,18 +115,18 @@ async function sendNodemailer(messageData) {
         subject: `Message from ${messageData.username} (${messageData.email})`,
         ...generateEmailContent(messageData),
 
-      };
+    };
       
       try  {
         await transporter.sendMail({
         ...mailOptions
       });
       
-      return info
+      
 
       }catch(error) {
         return error
       }
        
-    
+    return true
 }

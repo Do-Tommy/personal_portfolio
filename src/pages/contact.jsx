@@ -1,4 +1,3 @@
-'use client';
 
 import React from 'react'
 import { useForm } from "react-hook-form"
@@ -60,12 +59,16 @@ const Contact = () => {
         
         setSubmitted(true)
       }
-      console.log(res.message)
+      
+      
     }
     catch(err) {
-      console.error(err)
+     console.log(err)
+    return false
     }
+    
     setSubmitting(false)
+    return true
   }
 
   return isSubmitted ? (
