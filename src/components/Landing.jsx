@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react'
 import SocialMediaIcons from './SocialMediaIcons';
 import Image from 'next/image';
+import { Reveal } from '@/hooks/reveal';
 
 const Landing = () => {
 return (
@@ -10,6 +11,7 @@ return (
             <div className=' md:flex flex-wrap justify-center'>
                 <div className='p-5 md:order-2'>
                     <div >
+                        
                         <Image
                         width={900}
                         height={900}
@@ -18,16 +20,22 @@ return (
                         src='/DSC00639.jpg'
                         >
                         </Image>
+                        
                     </div>
                 </div>
+                
                 <div className='lg:mr-15 px-5'>
+                <Reveal>
                 <h1 className='py-4 md:shrink-0 text-6xl text-text font-Prompt font-bold overflow-hidden'>
                     Hey I&apos;m Tommy 
                     <div className='animate-sideways h-[10px] mt-2 bg-secondary border-2 border-pink-400'></div>
                 </h1>
+                </Reveal>
+                
                 <p className='text-3xl font-bold text-secondary font-Gideon Roman'>
                     Software Engineer
                 </p>
+                
                 <p className='text-lg mt-5 mb-7 m-auto text-text'>
                     New grad looking to build tools for the future. Striving everyday to create something new.
                 </p>
