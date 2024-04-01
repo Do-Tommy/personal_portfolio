@@ -28,7 +28,7 @@ return (
                 <Reveal>
                 <h1 className='py-4 md:shrink-0 text-6xl text-text font-Prompt font-bold overflow-hidden'>
                     Hey I&apos;m Tommy 
-                    <div className='animate-sideways h-[10px] mt-2 bg-secondary border-2 border-pink-400'></div>
+                    <div className='animate-sideways h-[10px] mt-2 bg-secondary border-2 border-secondary'></div>
                 </h1>
                 </Reveal>
                 
