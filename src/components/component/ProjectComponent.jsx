@@ -1,4 +1,3 @@
-
 import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card, CardImage } from "@/components/ui/card"
 
 import { Button } from "@/components/ui/button"
@@ -20,11 +19,12 @@ const ProjectComponent = ({project})  => {
               </div>
             </CardHeader>
             <div className="w-[100%] sm:max-w-md max-h-[30vh] overflow-hidden ">
-              <CardImage q
-                  src={project.image}
-                  title="green iguana"  
-                />
-                </div>
+              <CardImage 
+                src={project.image}
+                alt="Description of image"
+                className="custom-class"
+              />
+            </div>
             <CardContent className="grid gap-2">
             </CardContent>
             <CardFooter className="bg-primary py-4 dark:bg-background">

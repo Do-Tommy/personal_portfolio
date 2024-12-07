@@ -50,8 +50,17 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 ))
 CardFooter.displayName = "CardFooter"
 
-const CardImage = React.forwardRef(({ className, ...props }, ref) => (
-  <Image alt='ref' ref={ref} width={0} height={0} sizes="100vw"  className={`h-auto w-screen ${className}`} {...props} />
+const CardImage = React.forwardRef(({ className, alt = 'Image', ...props }, ref) => (
+  <Image 
+    ref={ref}
+    alt={alt}
+    width={0}
+    height={0}
+    sizes="100vw"
+    priority={true}
+    className={cn("h-auto w-screen", className)}
+    {...props} 
+  />
 ));
 CardImage.displayName = "CardImage";
 

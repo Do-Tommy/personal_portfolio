@@ -22,8 +22,11 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 
 
 const Contact = () => {
-  const [isSubmitted, setSubmitted] = useState(false)
-  const [isSubmitting, setSubmitting] = useState(false)
+  const [formState, setFormState] = useState({
+    isSubmitted: false,
+    isSubmitting: false,
+    error: null
+  });
   const recaptchaRef = React.createRef();
   const isDesktop =  useMediaQuery("(min-width:768px)");
 
@@ -32,47 +35,37 @@ const Contact = () => {
     defaultValues: {
       username: "",
       email: "",
-      text:"",
-    },
-    
-  })
-
+      message: ""
+    }
+  });
 
   const onSubmit = async (values) => {
-    setSubmitting(true)
-    const token = await recaptchaRef.current.executeAsync();
-    // Do something with the form values.
     try {
-      const res = await fetch("/api/contact", {
+      setFormState(prev => ({ ...prev, isSubmitting: true }));
+      const token = await recaptchaRef.current.executeAsync();
+      
+      const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          message: values.message,
-          
-          
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, token })
       });
-      if (res.status=== 200 || res.status===400) {
-        
-        setSubmitted(true)
-      }
-      
-      
-    }
-    catch(err) {
-     console.log(err)
-    return false
-    }
-    
-    setSubmitting(false)
-    return true
-  }
 
-  return isSubmitted ? (
+      if (!response.ok) {
+        throw new Error('Submission failed');
+      }
+
+      setFormState(prev => ({ ...prev, isSubmitted: true }));
+    } catch (error) {
+      setFormState(prev => ({ 
+        ...prev, 
+        error: error.message 
+      }));
+    } finally {
+      setFormState(prev => ({ ...prev, isSubmitting: false }));
+    }
+  };
+
+  return formState.isSubmitted ? (
     <div>
       <h1
         className="grid place-items-center text-center font-semibold text-3xl mt-[22.5rem]"
@@ -138,7 +131,7 @@ const Contact = () => {
         )}
       />
       
-        {isSubmitting ? (
+        {formState.isSubmitting ? (
           <Button disabled variant="outline">Loading</Button>
         ) :(
           <Button variant="outline" type="Submit">Submit</Button>
