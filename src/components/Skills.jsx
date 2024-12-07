@@ -94,9 +94,8 @@ const Skills = () => {
         className='rounded-lg flex justify-center' 
         width={500}
         height={500}
-        src='https://bairesdev.mo.cloudinary.net/blog/2022/01/programming-languages-1.jpg?tx=w_3840,q_auto'>
-
-      </Image>
+        src='/11-best-future-programming-languages.jpg'
+      />
       </div>
       </div>
       </section> 
