@@ -7,7 +7,7 @@ import { Reveal } from '@/hooks/reveal';
 const Landing = () => {
 return (
     <div className='w-full md:h-screen md:justify-center text-center z-0' id='landing'>
-        <div className='w-full h-full basis-3/5 py-10 md:flex items-center justify-center md:justify-center md:items-center'> 
+        <div className='w-full h-full basis-3/5 pt-0 md:py-10 md:flex items-center justify-center md:justify-center md:items-center'> 
             <div className=' md:flex flex-wrap justify-center'>
                 <div className='p-5 md:order-2'>
                     <div >
