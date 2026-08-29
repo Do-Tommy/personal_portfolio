@@ -1,13 +1,14 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/motionPrefs'
 
 export const skillDecks = [
   {
     id: 'software',
     label: 'Software',
+    panel: '#14201c',
+    ink: '#ebf6fa',
     accent: '#5eead4',
     blurb: 'Apps, APIs, and the edge that serves them.',
     items: [
@@ -28,6 +29,8 @@ export const skillDecks = [
   {
     id: 'network',
     label: 'Network',
+    panel: '#1a1410',
+    ink: '#ebf6fa',
     accent: '#c95c3f',
     blurb: 'Routing, overlays, and registry-grade ops.',
     items: [
@@ -48,6 +51,8 @@ export const skillDecks = [
   {
     id: 'ops',
     label: 'Ops & field',
+    panel: '#121a18',
+    ink: '#ebf6fa',
     accent: '#eee6d0',
     blurb: 'Observability, infra, and hands-on plant work.',
     items: [
@@ -67,27 +72,63 @@ export const skillDecks = [
   },
 ]
 
-function CardFace({ card, index, total }) {
+const STACK_ROTATIONS = [0, 3.4, -5.2]
+const STACK_SCALE_STEP = 0.018
+const STACK_X = [0, -4.2, 5.4]
+const STACK_Y = [0, 3.2, 6.8]
+const STACK_Z = ['0px', '-14cqw', '-28cqw']
+
+function clamp(v, min, max) {
+  return Math.min(max, Math.max(min, v))
+}
+
+function setShellTransform(shell, x = 0, y = 0, tiltX = 0, tiltY = 0, turn = 0) {
+  const plane = shell.querySelector('.skills-drag-plane')
+  if (!plane) return
+  plane.style.setProperty('--drag-x', `${x.toFixed(2)}px`)
+  plane.style.setProperty('--drag-y', `${y.toFixed(2)}px`)
+  plane.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`)
+  plane.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`)
+  plane.style.setProperty('--drag-turn', `${turn.toFixed(2)}deg`)
+}
+
+function resetShellTransform(shell) {
+  setShellTransform(shell)
+  const plane = shell.querySelector('.skills-drag-plane')
+  if (plane) {
+    plane.style.opacity = ''
+    plane.style.setProperty('--release-blur', '0px')
+  }
+  shell.classList.remove('is-dragging', 'is-tracking', 'is-releasing')
+}
+
+function CardBody({ deck, index, total }) {
   return (
-    <div className="flex h-full flex-col p-7 md:p-9">
-      <div className="flex items-baseline justify-between gap-3">
-        <p
-          className="text-[10px] font-medium uppercase tracking-[0.28em]"
-          style={{ color: card.accent }}
-        >
-          {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+    <div className="skills-artwork-body">
+      <div className="relative z-10 flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <p
+            className="text-[10px] font-semibold uppercase tracking-[0.28em] sm:text-xs"
+            style={{ color: deck.accent }}
+          >
+            {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+          </p>
+          <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-scrim sm:text-3xl md:text-4xl">
+            {deck.label}
+          </h3>
+          <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-white/75 text-scrim sm:text-base md:text-lg">
+            {deck.blurb}
+          </p>
+        </div>
+        <p className="shrink-0 text-[9px] font-medium uppercase tracking-[0.18em] text-white/45 sm:text-[10px]">
+          {deck.id}
         </p>
-        <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">{card.id}</p>
       </div>
-      <h3 className="mt-4 text-3xl font-light tracking-tight text-white md:text-4xl">
-        {card.label}
-      </h3>
-      <p className="mt-2 text-sm font-light text-white/60">{card.blurb}</p>
-      <ul className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-        {card.items.map((skill) => (
+      <ul className="relative z-10 mt-5 grid flex-1 grid-cols-2 gap-2.5 content-start sm:grid-cols-3 md:grid-cols-4 md:gap-3">
+        {deck.items.map((skill) => (
           <li
             key={skill}
-            className="rounded-lg border border-white/12 bg-black/50 px-3 py-2.5 text-sm font-light text-white/90"
+            className="flex items-center justify-center rounded-lg border border-white/14 bg-black/35 px-2.5 py-2 text-center text-xs font-medium text-white/90 text-scrim sm:text-sm md:px-3 md:py-2.5 md:text-[0.95rem]"
           >
             {skill}
           </li>
@@ -97,136 +138,327 @@ function CardFace({ card, index, total }) {
   )
 }
 
-function CardPeek({ card, index, total }) {
-  return (
-    <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-      <p
-        className="text-[10px] font-medium uppercase tracking-[0.28em]"
-        style={{ color: card.accent }}
-      >
-        {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-      </p>
-      <h3 className="mt-4 text-2xl font-light tracking-tight text-white/80 md:text-3xl">
-        {card.label}
-      </h3>
-      <p className="mt-2 text-sm font-light text-white/40">{card.blurb}</p>
-    </div>
-  )
-}
-
 export default function SkillsCardStack() {
   const reduce = useReducedMotion()
-  const [index, setIndex] = useState(0)
-  const dragRef = useRef({ x: 0, active: false })
-  const stageRef = useRef(null)
-  const n = skillDecks.length
+  const sceneRef = useRef(null)
+  const shellRefs = useRef([])
+  const [order, setOrder] = useState([0, 1, 2])
+  const [interacted, setInteracted] = useState(false)
+  const [status, setStatus] = useState('')
+  const orderRef = useRef(order)
+  const transitioningRef = useRef(false)
+  const activeDragRef = useRef(null)
 
-  const go = useCallback(
-    (dir) => {
-      setIndex((i) => (i + dir + n) % n)
+  const topIndex = order[order.length - 1]
+  const topDeck = skillDecks[topIndex]
+
+  useEffect(() => {
+    orderRef.current = order
+  }, [order])
+
+  const applyStackLayout = useCallback(() => {
+    const currentOrder = orderRef.current
+    const top = currentOrder[currentOrder.length - 1]
+
+    currentOrder.forEach((cardId, index) => {
+      const shell = shellRefs.current[cardId]
+      if (!shell) return
+      const depth = currentOrder.length - index - 1
+      const isTop = cardId === top
+      const artwork = shell.querySelector('.skills-artwork')
+
+      shell.style.zIndex = String(index + 1)
+      shell.style.pointerEvents = isTop ? 'auto' : 'none'
+      shell.tabIndex = isTop ? 0 : -1
+      shell.setAttribute('aria-hidden', isTop ? 'false' : 'true')
+      shell.classList.toggle('is-active', isTop)
+      shell.dataset.depth = String(depth)
+      shell.style.setProperty('--stack-x', `${STACK_X[depth] ?? 0}%`)
+      shell.style.setProperty('--stack-y', `${STACK_Y[depth] ?? 0}%`)
+      shell.style.setProperty('--stack-z', STACK_Z[depth] ?? '0px')
+
+      if (artwork) {
+        artwork.style.setProperty('--stack-rotation', `${STACK_ROTATIONS[depth] ?? 0}deg`)
+        artwork.style.setProperty('--stack-scale', String(1 - depth * STACK_SCALE_STEP))
+      }
+
+      if (!isTop) resetShellTransform(shell)
+    })
+
+    setStatus(`${skillDecks[top].label} is active`)
+  }, [])
+
+  useEffect(() => {
+    applyStackLayout()
+  }, [order, applyStackLayout])
+
+  const sendToBack = useCallback(
+    (cardId, vectorX = 1, vectorY = 0) => {
+      if (transitioningRef.current || cardId !== orderRef.current[orderRef.current.length - 1]) return
+
+      setInteracted(true)
+      transitioningRef.current = true
+      const shell = shellRefs.current[cardId]
+      const scene = sceneRef.current
+      if (!shell || !scene) return
+
+      const magnitude = Math.max(1, Math.hypot(vectorX, vectorY))
+      const directionX = vectorX / magnitude
+      const directionY = vectorY / magnitude
+      const distance = Math.max(190, scene.getBoundingClientRect().width * 0.66)
+      const duration = reduce ? 0 : 180
+
+      shell.classList.remove('is-dragging', 'is-tracking')
+      shell.classList.add('is-releasing')
+      setShellTransform(
+        shell,
+        directionX * distance,
+        directionY * distance * 0.58,
+        -directionY * 7,
+        directionX * 8,
+        directionX * 9,
+      )
+      const plane = shell.querySelector('.skills-drag-plane')
+      if (plane) {
+        plane.style.opacity = duration ? '0' : ''
+        plane.style.setProperty('--release-blur', duration ? '16px' : '0px')
+      }
+
+      window.setTimeout(() => {
+        setOrder((prev) => [cardId, ...prev.filter((id) => id !== cardId)])
+        resetShellTransform(shell)
+        transitioningRef.current = false
+      }, duration)
     },
-    [n],
+    [reduce],
+  )
+
+  const bringPreviousToFront = useCallback(() => {
+    if (transitioningRef.current) return
+
+    setInteracted(true)
+    transitioningRef.current = true
+    const current = orderRef.current
+    const outgoingId = current[current.length - 1]
+    const incomingId = current[0]
+    const outgoing = shellRefs.current[outgoingId]
+    const incoming = shellRefs.current[incomingId]
+    const scene = sceneRef.current
+    if (!outgoing || !incoming || !scene) return
+
+    const distance = Math.max(190, scene.getBoundingClientRect().width * 0.66)
+    const duration = reduce ? 0 : 360
+
+    setShellTransform(incoming, -distance, 0, 0, -6, -8)
+    const incomingPlane = incoming.querySelector('.skills-drag-plane')
+    if (incomingPlane) incomingPlane.style.opacity = duration ? '0.12' : ''
+
+    setOrder([...current.slice(1), incomingId])
+
+    window.setTimeout(() => {
+      resetShellTransform(incoming)
+      if (incomingPlane) incomingPlane.style.opacity = ''
+      transitioningRef.current = false
+    }, duration || 1)
+  }, [reduce])
+
+  const getDragCommitThreshold = () => {
+    const scene = sceneRef.current
+    if (!scene) return 64
+    return clamp(scene.getBoundingClientRect().width * 0.18, 52, 88)
+  }
+
+  const onPointerDown = (cardId) => (event) => {
+    if (
+      cardId !== orderRef.current[orderRef.current.length - 1] ||
+      transitioningRef.current ||
+      (event.button !== undefined && event.button !== 0)
+    ) {
+      return
+    }
+
+    const shell = shellRefs.current[cardId]
+    if (!shell) return
+
+    activeDragRef.current = {
+      cardId,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      committedDirection: 0,
+      traveled: 0,
+    }
+    shell.classList.remove('is-tracking')
+    shell.classList.add('is-dragging')
+    shell.focus({ preventScroll: true })
+
+    try {
+      shell.setPointerCapture?.(event.pointerId)
+    } catch {
+      activeDragRef.current = null
+    }
+    event.preventDefault()
+  }
+
+  const onPointerMove = (cardId) => (event) => {
+    const drag = activeDragRef.current
+    if (!drag || drag.cardId !== cardId || event.pointerId !== drag.pointerId) return
+
+    const shell = shellRefs.current[cardId]
+    const scene = sceneRef.current
+    if (!shell || !scene) return
+
+    const x = event.clientX - drag.startX
+    const y = event.clientY - drag.startY
+    const width = Math.max(1, scene.getBoundingClientRect().width)
+    const turn = clamp((x / width) * 11, -12, 12)
+    const threshold = getDragCommitThreshold()
+    const hasHorizontalIntent = Math.abs(x) >= Math.abs(y) * 0.75
+    const committedDirection =
+      Math.abs(x) >= threshold && hasHorizontalIntent ? Math.sign(x) : 0
+
+    drag.traveled = Math.max(drag.traveled, Math.hypot(x, y))
+    if (committedDirection) drag.committedDirection = committedDirection
+
+    setShellTransform(
+      shell,
+      x,
+      y,
+      clamp((-y / width) * 6, -6, 6),
+      clamp((x / width) * 7, -7, 7),
+      turn,
+    )
+    setInteracted(true)
+    event.preventDefault()
+  }
+
+  const onPointerUp = (cardId) => (event) => {
+    const drag = activeDragRef.current
+    if (!drag || drag.cardId !== cardId || event.pointerId !== drag.pointerId) return
+
+    const shell = shellRefs.current[cardId]
+    activeDragRef.current = null
+    if (!shell) return
+
+    shell.classList.remove('is-dragging')
+
+    const x = event.clientX - drag.startX
+    const y = event.clientY - drag.startY
+    const threshold = getDragCommitThreshold()
+    const direction =
+      drag.committedDirection ||
+      (Math.abs(x) >= threshold && Math.abs(x) >= Math.abs(y) * 0.75 ? Math.sign(x) : 0)
+
+    if (direction < 0) {
+      sendToBack(cardId, -1, y * 0.01)
+      return
+    }
+
+    if (direction > 0) {
+      sendToBack(cardId, 1, y * 0.01)
+      return
+    }
+
+    if (drag.traveled < 14) {
+      sendToBack(cardId, 1, 0)
+      return
+    }
+
+    shell.classList.add('is-releasing')
+    setShellTransform(shell)
+    window.setTimeout(() => shell.classList.remove('is-releasing'), 180)
+  }
+
+  const onScenePointerMove = useCallback(
+    (event) => {
+      if (reduce || activeDragRef.current || transitioningRef.current) return
+      const scene = sceneRef.current
+      const topId = orderRef.current[orderRef.current.length - 1]
+      const shell = shellRefs.current[topId]
+      if (!scene || !shell) return
+
+      const rect = scene.getBoundingClientRect()
+      const x = (event.clientX - rect.left) / rect.width
+      const y = (event.clientY - rect.top) / rect.height
+      const isNear = x > -0.22 && x < 1.22 && y > -0.18 && y < 1.18
+
+      if (!isNear) {
+        shell.classList.remove('is-tracking')
+        setShellTransform(shell)
+        return
+      }
+
+      const tiltX = clamp((0.5 - y) * 10, -4.75, 4.75)
+      const tiltY = clamp((x - 0.5) * 10, -4.75, 4.75)
+      shell.classList.add('is-tracking')
+      setShellTransform(shell, 0, 0, tiltX, tiltY, 0)
+    },
+    [reduce],
   )
 
   useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1)
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1)
+    const onKey = (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        sendToBack(orderRef.current[orderRef.current.length - 1], 1, 0)
+      }
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        bringPreviousToFront()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [go])
-
-  const onPointerDown = (e) => {
-    dragRef.current = { x: e.clientX, active: true }
-    e.currentTarget.setPointerCapture?.(e.pointerId)
-  }
-
-  const onPointerUp = (e) => {
-    if (!dragRef.current.active) return
-    const dx = e.clientX - dragRef.current.x
-    dragRef.current.active = false
-    if (Math.abs(dx) > 48) go(dx < 0 ? 1 : -1)
-  }
-
-  const deck = skillDecks[index]
-  const left = skillDecks[(index - 1 + n) % n]
-  const right = skillDecks[(index + 1) % n]
-  const leftIndex = (index - 1 + n) % n
-  const rightIndex = (index + 1) % n
+  }, [bringPreviousToFront, sendToBack])
 
   return (
     <div className="w-full">
       <div
-        ref={stageRef}
-        className="relative mx-auto h-[38rem] w-full max-w-5xl touch-pan-y select-none sm:h-[40rem]"
-        style={{ perspective: '1600px' }}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="Skills card stack"
+        ref={sceneRef}
+        className="skills-stack-scene"
+        data-interacted={interacted ? 'true' : 'false'}
+        onPointerMove={onScenePointerMove}
+        role="group"
+        aria-label="Drag left for the next card or right for the previous card. Tap for next."
       >
-        <motion.button
-          type="button"
-          aria-label={`Show ${left.label} deck`}
-          className="absolute inset-x-0 top-0 mx-auto h-[34rem] w-full max-w-3xl rounded-3xl border border-white/10 bg-[rgba(10,18,16,0.55)] shadow-xl sm:h-[36rem]"
-          style={{ zIndex: 10 }}
-          animate={{ x: -92, rotateZ: -11, scale: 0.86, opacity: 0.55 }}
-          transition={{ type: 'spring', stiffness: 180, damping: 28 }}
-          onClick={() => go(-1)}
-        >
-          <CardPeek card={left} index={leftIndex} total={n} />
-        </motion.button>
-
-        <motion.button
-          type="button"
-          aria-label={`Show ${right.label} deck`}
-          className="absolute inset-x-0 top-0 mx-auto h-[34rem] w-full max-w-3xl rounded-3xl border border-white/10 bg-[rgba(10,18,16,0.55)] shadow-xl sm:h-[36rem]"
-          style={{ zIndex: 10 }}
-          animate={{ x: 92, rotateZ: 11, scale: 0.86, opacity: 0.55 }}
-          transition={{ type: 'spring', stiffness: 180, damping: 28 }}
-          onClick={() => go(1)}
-        >
-          <CardPeek card={right} index={rightIndex} total={n} />
-        </motion.button>
-
-        <article
-          className="absolute inset-x-0 top-0 z-30 mx-auto h-[34rem] w-full max-w-3xl overflow-hidden rounded-3xl border border-white/12 bg-[rgba(10,18,16,0.94)] shadow-2xl backdrop-blur-md sm:h-[36rem]"
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
+        <div className="skills-stack">
+          {skillDecks.map((deck, cardId) => (
+            <div
               key={deck.id}
-              className="h-full"
-              initial={reduce ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              ref={(el) => {
+                shellRefs.current[cardId] = el
+              }}
+              className="skills-stack-shell"
+              data-card-id={cardId}
+              data-name={deck.label}
+              role="button"
+              aria-label={`${deck.label}. Drag left for next or right for previous.`}
+              onPointerDown={onPointerDown(cardId)}
+              onPointerMove={onPointerMove(cardId)}
+              onPointerUp={onPointerUp(cardId)}
+              onPointerCancel={onPointerUp(cardId)}
             >
-              <CardFace card={deck} index={index} total={n} />
-            </motion.div>
-          </AnimatePresence>
-        </article>
+              <div className="skills-drag-plane">
+                <article
+                  className="skills-artwork"
+                  style={{
+                    '--panel': deck.panel,
+                    '--ink': deck.ink,
+                    '--accent-card': deck.accent,
+                  }}
+                >
+                  <CardBody deck={deck} index={cardId} total={skillDecks.length} />
+                </article>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-8 flex items-center justify-center gap-4 text-[10px] uppercase tracking-[0.22em] text-white/45">
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          className="rounded-full border border-white/15 px-3 py-1.5 transition hover:border-white/35 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          Prev
-        </button>
-        <span aria-live="polite">{deck.label} · drag or tap</span>
-        <button
-          type="button"
-          onClick={() => go(1)}
-          className="rounded-full border border-white/15 px-3 py-1.5 transition hover:border-white/35 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          Next
-        </button>
-      </div>
+      <p className="skills-stack-hint" aria-hidden={interacted}>
+        ← drag next · tap next · drag previous →
+      </p>
+      <p className="skills-stack-status" aria-live="polite">
+        {status || `${topDeck.label} · swipe or tap`}
+      </p>
     </div>
   )
 }

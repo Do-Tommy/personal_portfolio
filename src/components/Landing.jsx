@@ -13,13 +13,13 @@ const Landing = () => {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a1210]/50 via-transparent to-[#0a1210]/30" />
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center px-6 pb-24 pt-32 text-center md:pb-32 md:pt-40">
         <Reveal from="up" className="w-full">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-accent">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
             Tommy Do
           </p>
-          <h1 className="text-6xl font-semibold tracking-tight text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)] md:text-7xl lg:text-8xl">
+          <h1 className="text-6xl font-semibold tracking-tight text-white text-scrim md:text-7xl lg:text-8xl">
             Network Engineer
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-xl font-normal leading-relaxed text-white/90 md:text-2xl">
+          <p className="mx-auto mt-6 max-w-2xl text-xl font-medium leading-relaxed text-white/90 text-scrim md:text-2xl">
             Builds reliable networks and the software that operates them — bare
             metal, routing, and automation.
           </p>

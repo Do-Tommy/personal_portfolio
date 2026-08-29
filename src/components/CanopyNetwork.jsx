@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@/hooks/motionPrefs'
 
 function mulberry32(seed) {
@@ -154,6 +154,7 @@ function plantTree(branches, leaves, rng, spec) {
   }
   branches.push(trunk)
   spawnChildren(trunk, rng, spec.depth, branches, leaves)
+  if (spec.hint) trunk.isHintTree = true
   return trunk
 }
 
@@ -163,6 +164,10 @@ function buildForest(w, heroH, pageH) {
   const leaves = []
   const trees = []
   const isNarrow = w < 720
+
+  // Hero side trunks and inward canopy removed — keeps landing text unobstructed.
+
+  const hintTree = trees.find((t) => t.isHintTree) || null
 
   const flankSection = (id) => {
     const el = document.getElementById(id)
@@ -184,7 +189,6 @@ function buildForest(w, heroH, pageH) {
   }
 
   flankSection('work')
-  flankSection('skills')
 
   const contact = document.getElementById('contact')
   const footer = document.getElementById('footer')
@@ -207,7 +211,7 @@ function buildForest(w, heroH, pageH) {
     })
   }
 
-  return { branches, leaves, trees }
+  return { branches, leaves, trees, hintTree }
 }
 
 function sectionBoxes() {
@@ -245,7 +249,10 @@ function pull(mx, my, x, y, radius, strength) {
 export default function CanopyNetwork() {
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
+  const hintBtnRef = useRef(null)
+  const hintOnRef = useRef(true)
   const reduce = useReducedMotion()
+  const [hintOn, setHintOn] = useState(true)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -335,6 +342,38 @@ export default function CanopyNetwork() {
       if (interactive(e.target)) return
       const p = toDoc(e.clientX, e.clientY)
       burstFrom(p.x, p.y)
+    }
+
+    const onHint = () => {
+      if (!forest?.hintTree) return
+      const ht = forest.hintTree
+      burstFrom(ht.rootX, ht.rootY - ht.length * 0.62)
+      hintOnRef.current = false
+      setHintOn(false)
+    }
+
+    const updateHintBubble = (now, scrollY, height, branchList) => {
+      const btn = hintBtnRef.current
+      if (!btn || !forest?.hintTree || !hintOnRef.current) {
+        if (btn) btn.style.opacity = '0'
+        return
+      }
+      const ht = forest.hintTree
+      const attach =
+        branchList.find((b) => {
+          let n = b
+          while (n.parent) n = n.parent
+          return n === ht && b.depth === 3
+        }) || ht
+      const end = getBranchEnd(attach, 0.9, now, ht._wind || 0, shake)
+      const landing = document.getElementById('landing')
+      const heroBottom = landing ? landing.offsetTop + landing.offsetHeight : heroH
+      const visible = scrollY < heroBottom - height * 0.12
+      btn.style.left = `${end.x}px`
+      btn.style.top = `${end.y - scrollY}px`
+      btn.style.transform = 'translate(-50%, -115%)'
+      btn.style.opacity = visible ? '1' : '0'
+      btn.style.pointerEvents = visible ? 'auto' : 'none'
     }
 
     const spawnFaller = (src, extraVy = 0) => {
@@ -522,6 +561,8 @@ export default function CanopyNetwork() {
         }
       })
 
+      updateHintBubble(now, scrollY, height, branches)
+
       branches.forEach((b) => {
         let n = b
         while (n.parent) n = n.parent
@@ -650,6 +691,7 @@ export default function CanopyNetwork() {
     window.addEventListener('resize', resize)
     window.addEventListener('pointermove', onMove, { passive: true })
     window.addEventListener('pointerdown', onDown)
+    window.addEventListener('canopy-hint', onHint)
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null
     if (ro) ro.observe(document.documentElement)
     const later = window.setTimeout(() => {
@@ -667,12 +709,24 @@ export default function CanopyNetwork() {
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('canopy-hint', onHint)
     }
   }, [reduce])
 
   return (
     <div ref={wrapRef} className="pointer-events-none fixed inset-0 z-[4]" aria-hidden>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      {!reduce && hintOn && (
+        <button
+          ref={hintBtnRef}
+          type="button"
+          className="pointer-events-auto fixed z-10 rounded-full border border-accent/60 bg-[rgba(8,14,12,0.92)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent shadow-[0_4px_20px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:border-accent hover:bg-[rgba(8,14,12,0.98)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          style={{ left: 0, top: 0, opacity: 0 }}
+          onClick={() => window.dispatchEvent(new CustomEvent('canopy-hint'))}
+        >
+          click me
+        </button>
+      )}
     </div>
   )
 }

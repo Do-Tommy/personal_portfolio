@@ -8,23 +8,24 @@ const Skills = () => {
   return (
     <div
       id="skills"
-      className="section-shell relative flex items-center justify-center overflow-visible py-20 md:py-28"
+      className="section-shell relative flex items-center justify-center overflow-visible py-16 md:py-28"
     >
-      <section className="relative z-10 w-full max-w-6xl px-6 md:px-10">
+      <section className="relative z-10 w-full max-w-6xl px-4 sm:px-6 md:px-10">
         <Reveal from="up">
-          <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-accent">
-            Chapter · Skills
-          </p>
-          <h2 className="text-center text-4xl font-light tracking-tight text-text md:text-5xl">
-            Skills
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-center text-lg font-light text-text/70">
-            Three decks — software, network, and ops. Drag or tap the stack to
-            move through them.
-          </p>
+          <div className="radial-copy mx-auto max-w-2xl px-2 py-6 text-center md:px-0 md:py-0">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
+              Chapter · Skills
+            </p>
+            <h2 className="text-4xl font-semibold tracking-tight text-text text-scrim md:text-5xl">
+              Skills
+            </h2>
+            <p className="mx-auto mt-3 max-w-lg text-base font-medium text-text/90 text-scrim md:text-lg">
+              Three decks across software, network, and ops.
+            </p>
+          </div>
         </Reveal>
 
-        <Reveal className="mt-14" from="up" delay={0.14}>
+        <Reveal className="mt-10 md:mt-14" from="up" delay={0.14}>
           <SkillsCardStack />
         </Reveal>
       </section>

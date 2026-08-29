@@ -10,11 +10,11 @@ export default function Footer() {
       className="section-shell relative overflow-hidden py-12"
     >
       <Reveal from="up" className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center">
-        <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-accent">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
           Tommy Do
         </p>
-        <p className="text-base font-light text-text/70">Network Engineer</p>
-        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-text/50">
+        <p className="text-base font-medium text-text/85 text-scrim">Network Engineer</p>
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-text/65">
           <Link href="/#about" className="transition hover:text-accent">
             About
           </Link>

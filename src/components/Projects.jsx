@@ -82,7 +82,7 @@ function ProjectCard({ project, index }) {
           </span>
         )}
       </div>
-      <p className="mt-3 flex-1 text-base font-light leading-relaxed text-text/70">
+      <p className="mt-3 flex-1 text-base font-medium leading-relaxed text-text/85 text-scrim">
         {project.description}
       </p>
       <div className="mt-5 flex flex-wrap gap-2">
@@ -119,15 +119,17 @@ const Projects = () => {
     >
       <section className="relative z-10 w-full max-w-7xl px-6 md:px-10">
         <Reveal from="up">
-          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.28em] text-accent">
-            Chapter · Projects
-          </p>
-          <h2 className="text-4xl font-semibold tracking-tight text-text md:text-6xl">
-            Projects
-          </h2>
-          <p className="mt-4 max-w-2xl text-xl font-light text-text/70">
-            Personal builds — live tools and experiments on the way to GitHub.
-          </p>
+          <div className="radial-copy max-w-2xl">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
+              Chapter · Projects
+            </p>
+            <h2 className="text-4xl font-bold tracking-tight text-text text-scrim md:text-6xl">
+              Projects
+            </h2>
+            <p className="mt-4 max-w-2xl text-lg font-medium text-text/90 text-scrim md:text-xl">
+              Personal builds — live tools and experiments on the way to GitHub.
+            </p>
+          </div>
         </Reveal>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
