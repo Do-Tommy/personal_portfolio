@@ -11,7 +11,7 @@ const navItems = [
   { name: 'Work', link: '/#work' },
   { name: 'Skills', link: '/#skills' },
   { name: 'Projects', link: '/#projects' },
-  { name: 'Contact', link: '/contact' },
+  { name: 'Contact', link: '/#contact' },
 ]
 
 const Header = () => {

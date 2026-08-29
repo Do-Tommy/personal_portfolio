@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/motionPrefs'
 
 export const skillDecks = [
@@ -67,10 +67,56 @@ export const skillDecks = [
   },
 ]
 
+function CardFace({ card, index, total }) {
+  return (
+    <div className="flex h-full flex-col p-7 md:p-9">
+      <div className="flex items-baseline justify-between gap-3">
+        <p
+          className="text-[10px] font-medium uppercase tracking-[0.28em]"
+          style={{ color: card.accent }}
+        >
+          {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+        </p>
+        <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">{card.id}</p>
+      </div>
+      <h3 className="mt-4 text-3xl font-light tracking-tight text-white md:text-4xl">
+        {card.label}
+      </h3>
+      <p className="mt-2 text-sm font-light text-white/60">{card.blurb}</p>
+      <ul className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {card.items.map((skill) => (
+          <li
+            key={skill}
+            className="rounded-lg border border-white/12 bg-black/50 px-3 py-2.5 text-sm font-light text-white/90"
+          >
+            {skill}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function CardPeek({ card, index, total }) {
+  return (
+    <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+      <p
+        className="text-[10px] font-medium uppercase tracking-[0.28em]"
+        style={{ color: card.accent }}
+      >
+        {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+      </p>
+      <h3 className="mt-4 text-2xl font-light tracking-tight text-white/80 md:text-3xl">
+        {card.label}
+      </h3>
+      <p className="mt-2 text-sm font-light text-white/40">{card.blurb}</p>
+    </div>
+  )
+}
+
 export default function SkillsCardStack() {
   const reduce = useReducedMotion()
   const [index, setIndex] = useState(0)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
   const dragRef = useRef({ x: 0, active: false })
   const stageRef = useRef(null)
   const n = skillDecks.length
@@ -103,120 +149,68 @@ export default function SkillsCardStack() {
     if (Math.abs(dx) > 48) go(dx < 0 ? 1 : -1)
   }
 
-  const onPointerMove = (e) => {
-    if (reduce || !stageRef.current) return
-    const rect = stageRef.current.getBoundingClientRect()
-    const nx = (e.clientX - rect.left) / rect.width - 0.5
-    const ny = (e.clientY - rect.top) / rect.height - 0.5
-    setTilt({ x: ny * -6, y: nx * 8 })
-  }
-
-  const onPointerLeave = () => setTilt({ x: 0, y: 0 })
-
   const deck = skillDecks[index]
+  const left = skillDecks[(index - 1 + n) % n]
+  const right = skillDecks[(index + 1) % n]
+  const leftIndex = (index - 1 + n) % n
+  const rightIndex = (index + 1) % n
 
   return (
     <div className="w-full">
       <div
         ref={stageRef}
-        className="relative mx-auto h-[34rem] w-full max-w-2xl touch-pan-y select-none sm:h-[36rem]"
-        style={{ perspective: '1400px' }}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
+        className="relative mx-auto h-[38rem] w-full max-w-5xl touch-pan-y select-none sm:h-[40rem]"
+        style={{ perspective: '1600px' }}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         role="region"
         aria-roledescription="carousel"
         aria-label="Skills card stack"
       >
-        {skillDecks.map((card, i) => {
-          const offset = (i - index + n) % n
-          const isFront = offset === 0
-          const depth = offset === 0 ? 0 : offset === 1 ? 1 : 2
-          const z = 30 - depth * 10
-          const y = depth * 14
-          const scale = 1 - depth * 0.045
-          const rot = depth * -3
+        <motion.button
+          type="button"
+          aria-label={`Show ${left.label} deck`}
+          className="absolute inset-x-0 top-0 mx-auto h-[34rem] w-full max-w-3xl rounded-3xl border border-white/10 bg-[rgba(10,18,16,0.55)] shadow-xl sm:h-[36rem]"
+          style={{ zIndex: 10 }}
+          animate={{ x: -92, rotateZ: -11, scale: 0.86, opacity: 0.55 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 28 }}
+          onClick={() => go(-1)}
+        >
+          <CardPeek card={left} index={leftIndex} total={n} />
+        </motion.button>
 
-          return (
-            <motion.article
-              key={card.id}
-              className="absolute inset-x-0 top-0 mx-auto h-[30rem] w-full max-w-xl overflow-hidden rounded-3xl border border-white/12 shadow-2xl sm:h-[32rem]"
-              style={{
-                zIndex: z,
-                background: isFront
-                  ? 'rgba(10, 18, 16, 0.88)'
-                  : 'rgba(10, 18, 16, 0.35)',
-                backdropFilter: 'blur(16px)',
-                transformStyle: 'preserve-3d',
-                cursor: isFront ? 'grab' : 'pointer',
-                pointerEvents: isFront || depth === 1 ? 'auto' : 'none',
-              }}
-              animate={{
-                y,
-                scale,
-                rotateZ: rot + (isFront && !reduce ? tilt.y * 0.12 : 0),
-                rotateX: isFront && !reduce ? tilt.x : 0,
-                rotateY: isFront && !reduce ? tilt.y : depth * -5,
-                opacity: isFront ? 1 : depth === 1 ? 0.22 : 0,
-              }}
-              transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-              onClick={() => {
-                if (!isFront) setIndex(i)
-              }}
+        <motion.button
+          type="button"
+          aria-label={`Show ${right.label} deck`}
+          className="absolute inset-x-0 top-0 mx-auto h-[34rem] w-full max-w-3xl rounded-3xl border border-white/10 bg-[rgba(10,18,16,0.55)] shadow-xl sm:h-[36rem]"
+          style={{ zIndex: 10 }}
+          animate={{ x: 92, rotateZ: 11, scale: 0.86, opacity: 0.55 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 28 }}
+          onClick={() => go(1)}
+        >
+          <CardPeek card={right} index={rightIndex} total={n} />
+        </motion.button>
+
+        <article
+          className="absolute inset-x-0 top-0 z-30 mx-auto h-[34rem] w-full max-w-3xl overflow-hidden rounded-3xl border border-white/12 bg-[rgba(10,18,16,0.94)] shadow-2xl backdrop-blur-md sm:h-[36rem]"
+          style={{ transformStyle: 'preserve-3d' }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={deck.id}
+              className="h-full"
+              initial={reduce ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduce ? undefined : { opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
-              {isFront ? (
-                <div className="relative z-10 flex h-full flex-col p-7 md:p-9">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <p
-                      className="text-[10px] font-medium uppercase tracking-[0.28em]"
-                      style={{ color: card.accent }}
-                    >
-                      {String(i + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
-                    </p>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
-                      {card.id}
-                    </p>
-                  </div>
-                  <h3 className="mt-4 text-3xl font-light tracking-tight text-white md:text-4xl">
-                    {card.label}
-                  </h3>
-                  <p className="mt-2 text-sm font-light text-white/60">{card.blurb}</p>
-
-                  <AnimatePresence mode="wait">
-                    <motion.ul
-                      key={card.id}
-                      className="mt-6 grid flex-1 grid-cols-2 content-start gap-2.5 sm:grid-cols-3"
-                      initial={reduce ? false : { opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={reduce ? undefined : { opacity: 0, y: -10 }}
-                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      {card.items.map((skill, si) => (
-                        <motion.li
-                          key={skill}
-                          className="rounded-lg border border-white/12 bg-black/45 px-3 py-2.5 text-sm font-light text-white/90"
-                          initial={reduce ? false : { opacity: 0, y: 12 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            delay: reduce ? 0 : 0.03 * si,
-                            duration: 0.35,
-                            ease: [0.16, 1, 0.3, 1],
-                          }}
-                        >
-                          {skill}
-                        </motion.li>
-                      ))}
-                    </motion.ul>
-                  </AnimatePresence>
-                </div>
-              ) : null}
-            </motion.article>
-          )
-        })}
+              <CardFace card={deck} index={index} total={n} />
+            </motion.div>
+          </AnimatePresence>
+        </article>
       </div>
 
-      <div className="mt-6 flex items-center justify-center gap-4 text-[10px] uppercase tracking-[0.22em] text-white/45">
+      <div className="mt-8 flex items-center justify-center gap-4 text-[10px] uppercase tracking-[0.22em] text-white/45">
         <button
           type="button"
           onClick={() => go(-1)}
@@ -224,9 +218,7 @@ export default function SkillsCardStack() {
         >
           Prev
         </button>
-        <span aria-live="polite">
-          {deck.label} · drag or tap
-        </span>
+        <span aria-live="polite">{deck.label} · drag or tap</span>
         <button
           type="button"
           onClick={() => go(1)}

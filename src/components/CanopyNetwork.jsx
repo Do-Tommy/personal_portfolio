@@ -91,7 +91,7 @@ function spawnChildren(parent, rng, maxDepth, branches, leaves) {
       x: tip.x,
       y: tip.y,
       angle: parent.angle,
-      size: 8 + rng() * 12,
+      size: 10 + rng() * 14,
       phase: rng() * Math.PI * 2,
       tint: rng(),
       branch: parent,
@@ -163,40 +163,55 @@ function buildForest(w, heroH, pageH) {
   const leaves = []
   const trees = []
   const isNarrow = w < 720
-  const heroSpecs = isNarrow
-    ? [{ x: w * 0.82, y: heroH * 0.99, lean: 0.1, len: heroH * 0.52, thick: 28, depth: 7, delay: 0 }]
-    : [
-        { x: w * 0.08, y: heroH * 0.99, lean: -0.12, len: heroH * 0.62, thick: 34, depth: 8, delay: 0.08 },
-        { x: w * 0.92, y: heroH * 0.99, lean: 0.12, len: heroH * 0.6, thick: 32, depth: 8, delay: 0 },
-      ]
 
-  heroSpecs.forEach((spec) => {
-    trees.push(plantTree(branches, leaves, rng, spec))
-  })
-
-  const ids = ['about', 'work', 'skills', 'projects', 'footer']
-  ids.forEach((id, i) => {
+  const flankSection = (id) => {
     const el = document.getElementById(id)
     if (!el) return
-    const y = el.getBoundingClientRect().top + window.scrollY + el.offsetHeight * 0.92
-    const left = i % 2 === 0
-    const spec = {
-      x: w * (isNarrow ? (left ? 0.08 : 0.92) : left ? 0.06 : 0.94),
-      y: Math.min(pageH - 24, y),
-      lean: left ? 0.22 : -0.22,
-      len: heroH * (isNarrow ? 0.32 : 0.4),
-      thick: isNarrow ? 16 : 22,
-      depth: isNarrow ? 6 : 7,
-      delay: 0.1 + i * 0.04,
-    }
-    trees.push(plantTree(branches, leaves, rng, spec))
-  })
+    const midY =
+      el.getBoundingClientRect().top + window.scrollY + el.offsetHeight * 0.4
+    const specs = isNarrow
+      ? [
+          { x: w * 0.05, y: midY, lean: -0.14, len: heroH * 0.54, thick: 18, depth: 8, delay: 0.1 },
+          { x: w * 0.95, y: midY, lean: 0.14, len: heroH * 0.54, thick: 18, depth: 8, delay: 0.08 },
+        ]
+      : [
+          { x: w * 0.05, y: midY, lean: -0.12, len: heroH * 0.64, thick: 24, depth: 9, delay: 0.1 },
+          { x: w * 0.95, y: midY, lean: 0.12, len: heroH * 0.64, thick: 24, depth: 9, delay: 0.08 },
+        ]
+    specs.forEach((spec) => {
+      trees.push(plantTree(branches, leaves, rng, spec))
+    })
+  }
+
+  flankSection('work')
+  flankSection('skills')
+
+  const contact = document.getElementById('contact')
+  const footer = document.getElementById('footer')
+  const anchor = contact || footer
+  if (anchor) {
+    const baseY =
+      anchor.getBoundingClientRect().top + window.scrollY + anchor.offsetHeight * 0.72
+    const bottomSpecs = isNarrow
+      ? [
+          { x: w * 0.12, y: baseY, lean: -0.18, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.14 },
+          { x: w * 0.88, y: baseY, lean: 0.18, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.1 },
+        ]
+      : [
+          { x: w * 0.07, y: baseY, lean: -0.16, len: heroH * 0.5, thick: 26, depth: 8, delay: 0.14 },
+          { x: w * 0.93, y: baseY, lean: 0.16, len: heroH * 0.5, thick: 26, depth: 8, delay: 0.1 },
+          { x: w * 0.5, y: baseY + heroH * 0.04, lean: 0.04, len: heroH * 0.36, thick: 18, depth: 6, delay: 0.18 },
+        ]
+    bottomSpecs.forEach((spec) => {
+      trees.push(plantTree(branches, leaves, rng, spec))
+    })
+  }
 
   return { branches, leaves, trees }
 }
 
 function sectionBoxes() {
-  return ['about', 'work', 'skills', 'projects', 'footer']
+  return ['contact', 'footer']
     .map((id) => {
       const el = document.getElementById(id)
       if (!el) return null
@@ -357,13 +372,13 @@ export default function CanopyNetwork() {
     const seedSections = () => {
       if (landed.length) return
       sectionBoxes().forEach((hit) => {
-        const pad = 40
-        const n = hit.id === 'skills' ? 22 : 16
+        const pad = 48
+        const n = hit.id === 'contact' ? 36 : 18
         for (let i = 0; i < n; i += 1) {
           landed.push({
-            x: hit.left + pad + rng() * Math.max(40, hit.width - pad * 2),
-            y: hit.top + 70 + rng() * Math.max(60, hit.bottom - hit.top - 140),
-            size: 7 + rng() * 9,
+            x: hit.left + pad + rng() * Math.max(60, hit.width - pad * 2),
+            y: hit.top + 50 + rng() * Math.max(80, hit.bottom - hit.top - 100),
+            size: 8 + rng() * 10,
             tint: rng(),
             phase: rng() * Math.PI * 2,
             pulse: rng() * Math.PI * 2,
@@ -414,7 +429,7 @@ export default function CanopyNetwork() {
       const col = colorForDepth(b.depth, b.maxDepth, b.hueShift)
       const depthT = b.depth / Math.max(1, b.maxDepth)
       const baseAlpha =
-        b.depth <= 1 ? 0.96 : b.depth <= 5 ? lerp(0.92, 0.72, depthT) : lerp(0.7, 0.38, (depthT - 0.5) * 2)
+        b.depth <= 1 ? 0.98 : b.depth <= 5 ? lerp(0.94, 0.78, depthT) : lerp(0.78, 0.48, (depthT - 0.5) * 2)
       const strokeCount = b.depth < 3 ? 5 : b.depth < 6 ? 3 : 2
       const thickBase = b.thickness
       const thickTaper = lerp(thickBase, thickBase * 0.55, progress)
@@ -515,6 +530,9 @@ export default function CanopyNetwork() {
 
       if (!reduce && grow > 0.42) {
         spawnAcc += dt
+        const contactBox = sectionBoxes().find((b) => b.id === 'contact')
+        const inContactZone =
+          contactBox && scrollY + height * 0.55 > contactBox.top - 120
         while (spawnAcc > 0.038 && fallers.length < 170) {
           spawnAcc -= 0.038
           const src = leaves[(rng() * leaves.length) | 0]
@@ -528,7 +546,7 @@ export default function CanopyNetwork() {
             rng() * 0.3,
           )
         }
-        if (rng() > 0.65 && fallers.length < 170) {
+        if (inContactZone && rng() > 0.55 && fallers.length < 170) {
           fallers.push({
             x: rng() * width,
             y: scrollY - 24,
@@ -556,9 +574,9 @@ export default function CanopyNetwork() {
           end.x + sway,
           end.y - scrollY + Math.cos(elapsed * 0.8 + leaf.phase) * 2.4 + p.y,
           leaf.angle + 1.2 + sway * 0.02,
-          leaf.size,
+          leaf.size * 1.08,
           leaf.tint,
-          appear * 0.88,
+          appear * 0.95,
         )
       })
 

@@ -1,13 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import dynamic from 'next/dynamic'
 import { Reveal } from '@/hooks/reveal'
-
-const SectionField = dynamic(
-  () => import('@/components/threeui/SectionField'),
-  { ssr: false },
-)
 
 function MailtoFallback() {
   return (
@@ -146,7 +140,6 @@ const Contact = () => {
   const formId = process.env.NEXT_PUBLIC_FORM
   return (
     <div className="section-shell relative min-h-[100svh] overflow-hidden">
-      <SectionField kind="horizon" opacity={0.22} />
       {formId ? <ContactForm formId={formId} /> : <MailtoFallback />}
     </div>
   )
