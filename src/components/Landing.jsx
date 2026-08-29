@@ -1,59 +1,67 @@
-import Link from 'next/link';
+import Link from 'next/link'
 import React from 'react'
-import SocialMediaIcons from './SocialMediaIcons';
-import Image from 'next/image';
-import { Reveal } from '@/hooks/reveal';
+import SocialMediaIcons from './SocialMediaIcons'
+import Image from 'next/image'
+import { Reveal } from '@/hooks/reveal'
 
 const Landing = () => {
-return (
-    <div className='w-full md:h-screen md:justify-center text-center z-0' id='landing'>
-        <div className='w-full h-full basis-3/5 py-10 md:flex items-center justify-center md:justify-center md:items-center'> 
-            <div className=' md:flex flex-wrap justify-center'>
-                <div className='p-5 md:order-2'>
-                    <div >
-                        
-                        <Image
-                        width={900}
-                        height={900}
-                        alt='profile'
-                        className='rounded-lg m-auto flex w-[90%] md:max-w-[500px] md:mr-8'
-                        src='/DSC00639.jpg'
-                        >
-                        </Image>
-                        
-                    </div>
-                </div>
-                
-                <div className='lg:mr-15 px-5'>
-                <Reveal>
-                <h1 className='py-4 md:shrink-0 text-6xl text-text font-Prompt font-bold overflow-hidden'>
-                    Hey I&apos;m Tommy 
-                    <div className='animate-sideways h-[10px] mt-2 bg-secondary border-2 border-secondary'></div>
-                </h1>
-                </Reveal>
-                
-                <p className='text-3xl font-bold text-secondary font-Gideon Roman'>
-                    Software Engineer
-                </p>
-                
-                <p className='text-lg mt-5 mb-7 m-auto text-text'>
-                    New grad looking to build tools for the future. Striving everyday to create something new.
-                </p>
-                <Link 
-                    className="bg-accent text-text -sm py-2 px-7 font-semibold
-                    hover:bg-blue hover:text-secondary transition duration-500 "
-                    href='/contact'>
-                    Contact me
-                </Link>
-                <div className='flex justify-center'>
-                <SocialMediaIcons/>
-                </div>
-                </div>
-            </div>   
-        </div>
-        
-    </div>
-)
+  return (
+    <section
+      id="landing"
+      className="section-shell relative flex min-h-[100svh] w-full items-center overflow-hidden"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#0a1210]/80 via-[#0a1210]/20 to-transparent" />
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-6 pb-20 pt-28 md:flex-row md:items-end md:justify-between md:pb-28 md:pt-36">
+        <Reveal from="left" className="max-w-xl text-center md:text-left">
+          <p className="mb-3 text-sm font-medium uppercase tracking-[0.22em] text-accent">
+            Tommy Do
+          </p>
+          <h1 className="text-5xl font-light tracking-tight text-text md:text-6xl lg:text-7xl">
+            Network Engineer
+          </h1>
+          <p className="mt-5 text-lg font-light leading-relaxed text-text/80 md:text-xl">
+            Builds reliable networks and the software that operates them — bare
+            metal, routing, and automation.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+            <a
+              href="#work"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-medium text-text backdrop-blur-md transition duration-150 hover:border-white/40 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              View work
+            </a>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-medium text-text backdrop-blur-md transition duration-150 hover:border-white/40 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              Get in touch
+            </Link>
+          </div>
+          <div className="mt-6 flex justify-center md:justify-start">
+            <SocialMediaIcons />
+          </div>
+        </Reveal>
+        <Reveal from="right" className="relative w-full max-w-sm shrink-0">
+          <div
+            className="glass-plate overflow-hidden rounded-3xl p-2"
+            style={{ transform: 'rotate(-1.4deg)' }}
+          >
+            <Image
+              width={500}
+              height={500}
+              alt="Tommy Do"
+              className="relative m-auto w-full rounded-2xl object-cover"
+              src="/DSC00639.jpg"
+              priority
+            />
+            <p className="px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-white/50">
+              Field note · San Jose
+            </p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
 }
 
-export default Landing;
+export default Landing

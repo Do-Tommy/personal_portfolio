@@ -1,162 +1,155 @@
 'use client'
 
-import React from 'react'
-import { useForm } from "react-hook-form"
-import { useState } from 'react'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import ReCAPTCHA from 'react-google-recaptcha'
-import { contactSchema } from './api/contact'
-import { Textarea } from '@/components/ui/textarea';
-import { yupResolver } from "@hookform/resolvers/yup"
-import { Button } from '@/components/ui/button';
-import useMediaQuery from '@/hooks/useMediaQuery';
+import React, { useState } from 'react'
+import dynamic from 'next/dynamic'
+import { Reveal } from '@/hooks/reveal'
 
+const SectionField = dynamic(
+  () => import('@/components/threeui/SectionField'),
+  { ssr: false },
+)
 
-const Contact = () => {
-  const [isSubmitted, setSubmitted] = useState(false)
-  const [isSubmitting, setSubmitting] = useState(false)
-  const recaptchaRef = React.createRef();
-  const isDesktop =  useMediaQuery("(min-width:768px)");
-
-  const form = useForm({
-    resolver: yupResolver(contactSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      text:"",
-    },
-    
-  })
-
-
-  const onSubmit = async (values) => {
-    setSubmitting(true)
-    const token = await recaptchaRef.current.executeAsync();
-    // Do something with the form values.
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          email: values.email,
-          message: values.message,
-          
-          
-        }),
-      });
-      if (res.status=== 200 || res.status===400) {
-        
-        setSubmitted(true)
-      }
-      
-      
-    }
-    catch(err) {
-     console.log(err)
-    return false
-    }
-    
-    setSubmitting(false)
-    return true
-  }
-
-  return isSubmitted ? (
-    <div>
-      <h1
-        className="grid place-items-center text-center font-semibold text-3xl mt-[22.5rem]"
-      >
-        Thank you for your message!
-      </h1>
-      
+function MailtoFallback() {
+  return (
+    <div className="relative z-10 mx-auto mt-28 max-w-xl px-6 pb-24">
+      <Reveal from="up">
+        <div className="glass-plate p-6 md:p-8">
+        <h1 className="text-3xl font-light tracking-tight text-text">
+          Get in touch
+        </h1>
+        <p className="mt-2 text-sm font-light text-text/70">
+          Network engineering, automation, or a project idea — send a note.
+        </p>
+        <a
+          href="mailto:hello@tommydo.dev?subject=Portfolio%20contact"
+          className="group relative mt-8 inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          <span
+            className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-accent/40 blur-xl"
+            aria-hidden
+          />
+          Email hello@tommydo.dev
+        </a>
+        </div>
+      </Reveal>
     </div>
-    )  : (
-    <div className={'grid my-6 mt-32 ' + (isDesktop ? 'max-w-[40%] mx-20' : 'min-w-[40%] mx-12' ) }>
-    <h1 className='text-2xl font-extrabold my-6 border-b-2 border-black border-opacity-75'>Lets get in touch!</h1>
-  <Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      <FormField
-        control={form.control}
-        name="username"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='font-semibold text-text'>First and Last Name</FormLabel>
-            <FormControl>
-              <Input placeholder="John Doe" {...field} />
-            </FormControl>
-            {form.formState.errors.username && <div><p className='text-red-500' role="alert">Name Required</p></div>}
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className='font-semibold text-text'>Email</FormLabel>
-            <FormControl>
-              <Input 
-              {...form.register('email',{required:'Email  is required'})}
-              {...field} />
-            </FormControl>
-            {form.formState.errors.email && <div><p className='text-red-500' role="alert">Email Required</p></div>}
-
-          </FormItem>
-        )}
-      />
-      
-      <FormField
-        control={form.control}
-        name="message"
-        render={({ field }) => (
-          <FormItem  className='grid'>
-            <FormLabel className='font-semibold text-text' >Message</FormLabel>
-            <FormControl>
-            <Textarea
-                placeholder="Reach out to me!"
-                className="resize-none rounded-md"
-                {...form.register(
-                  'message',
-                  {required:'Message is required'
-                })
-                }
-                {...field}
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-      
-        {isSubmitting ? (
-          <Button disabled variant="outline">Loading</Button>
-        ) :(
-          <Button variant="outline" type="Submit">Submit</Button>
-        )
-        }
-      
-      <ReCAPTCHA
-      ref={recaptchaRef}
-      size="invisible"
-      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-      />
-    </form>
-  </Form>
-  </div>)
-    
-    
+  )
 }
 
+function ContactForm({ formId }) {
+  const [status, setStatus] = useState('idle')
+  const [error, setError] = useState('')
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    setStatus('submitting')
+    setError('')
+    const form = e.currentTarget
+    const data = new FormData(form)
+    try {
+      const res = await fetch(`https://formspree.io/f/${formId}`, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+      })
+      if (res.ok) {
+        setStatus('succeeded')
+        form.reset()
+      } else {
+        const body = await res.json().catch(() => ({}))
+        setError(body.error || 'Something went wrong. Try again.')
+        setStatus('idle')
+      }
+    } catch {
+      setError('Network error. Try again or use email.')
+      setStatus('idle')
+    }
+  }
+
+  if (status === 'succeeded') {
+    return (
+      <div className="relative z-10 grid min-h-[70vh] place-items-center px-6">
+        <p className="max-w-md text-center text-2xl font-light text-text">
+          Thanks — I will get back to you soon.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="relative z-10 mx-auto mt-28 max-w-xl px-6 pb-24">
+      <Reveal from="up">
+      <div className="glass-plate p-6 md:p-8">
+        <h1 className="text-3xl font-light tracking-tight text-text">
+          Get in touch
+        </h1>
+        <p className="mt-2 text-sm font-light text-text/70">
+          Network engineering, automation, or a project idea — send a note.
+        </p>
+        <form onSubmit={onSubmit} className="mt-8 space-y-5">
+          <div>
+            <label htmlFor="name" className="text-sm font-medium text-text">
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              required
+              className="mt-1.5 w-full rounded-xl border border-white/15 bg-black/20 px-3 py-2.5 text-text outline-none focus:border-accent/50"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="text-sm font-medium text-text">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              required
+              className="mt-1.5 w-full rounded-xl border border-white/15 bg-black/20 px-3 py-2.5 text-text outline-none focus:border-accent/50"
+            />
+          </div>
+          <div>
+            <label htmlFor="message" className="text-sm font-medium text-text">
+              Message
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows={5}
+              required
+              className="mt-1.5 w-full resize-none rounded-xl border border-white/15 bg-black/20 px-3 py-2.5 text-text outline-none focus:border-accent/50"
+            />
+          </div>
+          {error ? <p className="text-sm text-red-300">{error}</p> : null}
+          <button
+            type="submit"
+            disabled={status === 'submitting'}
+            className="group relative inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition hover:scale-[1.01] disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:hover:scale-100"
+          >
+            <span
+              className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-accent/40 blur-xl"
+              aria-hidden
+            />
+            {status === 'submitting' ? 'Sending…' : 'Send message'}
+          </button>
+        </form>
+      </div>
+      </Reveal>
+    </div>
+  )
+}
+
+const Contact = () => {
+  const formId = process.env.NEXT_PUBLIC_FORM
+  return (
+    <div className="section-shell relative min-h-[100svh] overflow-hidden">
+      <SectionField kind="horizon" opacity={0.22} />
+      {formId ? <ContactForm formId={formId} /> : <MailtoFallback />}
+    </div>
+  )
+}
 
 export default Contact

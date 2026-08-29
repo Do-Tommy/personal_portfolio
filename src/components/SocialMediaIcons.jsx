@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const SocialMediaIcons = () => {
     return (
-        <div className="flex justify-center md:justify-start my-10 gap-7">
+        <div className="mt-2 flex justify-center gap-6 md:justify-start">
       <a
         className="hover:opacity-50 transition duration-500"
         href="https://www.linkedin.com/in/tommy-do-9aaa26169/"

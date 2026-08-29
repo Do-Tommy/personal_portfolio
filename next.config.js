@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ['@designcodeio/threeui'],
   images: {
-    domains: ['media.california.com','bairesdev.mo.cloudinary.net']
+    domains: ['media.california.com', 'bairesdev.mo.cloudinary.net'],
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
     config.module.rules.push({
       test: /\.svg$/i,
       issuer: { and: [/\.(js|ts|md)x?$/] },
@@ -19,23 +20,21 @@ const nextConfig = {
           },
         },
       ],
-    });
-    return config;
-  },
-  webpack: (config, { isServer }) => {
+    })
     if (!isServer) {
       config.resolve = {
         ...config.resolve,
         fallback: {
+          ...config.resolve.fallback,
           net: false,
           dns: false,
           tls: false,
           fs: false,
           request: false,
         },
-      };
+      }
     }
-    return config;
+    return config
   },
 }
 
