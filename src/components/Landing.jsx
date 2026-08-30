@@ -16,7 +16,7 @@ const Landing = () => {
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
             Tommy Do
           </p>
-          <h1 className="text-6xl font-semibold tracking-tight text-white text-scrim md:text-7xl lg:text-8xl">
+          <h1 className="font-display text-6xl font-medium tracking-tight text-white text-scrim md:text-7xl lg:text-8xl">
             Network Engineer
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-xl font-medium leading-relaxed text-white/90 text-scrim md:text-2xl">
@@ -31,7 +31,7 @@ const Landing = () => {
               View work
             </a>
             <Link
-              href="/contact"
+              href="#contact"
               className="inline-flex items-center justify-center rounded-full border border-accent/40 bg-accent/15 px-7 py-3.5 text-sm font-medium text-accent backdrop-blur-md transition duration-150 hover:border-accent/60 hover:bg-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               Get in touch

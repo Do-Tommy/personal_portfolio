@@ -23,7 +23,7 @@ const Header = () => {
       <div className="relative flex h-16 items-center justify-between border-b border-white/10 bg-[#0a1210]/70 px-4 backdrop-blur-md md:mx-auto md:mt-4 md:h-[4.25rem] md:max-w-6xl md:rounded-2xl md:border md:border-white/12 md:bg-[#0a1210]/55 md:px-8 md:shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
         <Link className="flex items-center gap-3" href={navItems[0].link}>
           <Image src="/homeicon.png" alt="" width={40} height={40} />
-          <span className="text-xl font-light tracking-tight text-text hover:text-accent">
+          <span className="text-xl font-medium tracking-tight text-text hover:text-accent">
             Tommy Do
           </span>
         </Link>

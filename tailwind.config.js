@@ -18,6 +18,10 @@ module.exports = withMT({
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Lexend', 'system-ui', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'Times New Roman', 'serif'],
+      },
       colors: {
         text: 'var(--text)',
         background: 'var(--background)',

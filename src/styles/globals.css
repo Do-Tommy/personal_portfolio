@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;300;400;500;600&family=Gideon+Roman&family=Prompt:ital,wght@0,300;0,400;0,500;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Lexend:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
@@ -10,6 +10,8 @@
     --primary: #14201c;
     --secondary: #1a2e28;
     --accent: #5eead4;
+    --font-sans: 'Lexend', system-ui, sans-serif;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
     --motion-fast: 150ms;
     --motion-med: 280ms;
     --motion-slow: 600ms;
@@ -28,7 +30,7 @@
   }
 
   body {
-    font-family: Lexend, system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-weight: 400;
     background: var(--background);
     color: var(--text);
@@ -36,7 +38,15 @@
 
   h1,
   h2 {
-    letter-spacing: -0.006em;
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -57,20 +67,72 @@
 }
 
 .glass-plate {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(5, 9, 8, 0.88);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(36px) saturate(120%);
-  -webkit-backdrop-filter: blur(36px) saturate(120%);
-  border-radius: 1rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(94, 234, 212, 0.07) 0%,
+    rgba(20, 32, 28, 0.38) 42%,
+    rgba(5, 9, 8, 0.5) 100%
+  );
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-radius: 1.25rem;
+  transition:
+    border-color var(--motion-med) var(--ease-out),
+    box-shadow var(--motion-med) var(--ease-out),
+    background var(--motion-med) var(--ease-out);
+}
+
+.glass-plate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 90% 55% at 50% 0%, rgba(255, 255, 255, 0.1), transparent 62%);
+}
+
+.glass-plate > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-plate:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: linear-gradient(
+    155deg,
+    rgba(94, 234, 212, 0.1) 0%,
+    rgba(20, 32, 28, 0.44) 42%,
+    rgba(5, 9, 8, 0.54) 100%
+  );
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .readable-panel {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(5, 9, 8, 0.9);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(40px) saturate(120%);
-  -webkit-backdrop-filter: blur(40px) saturate(120%);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    155deg,
+    rgba(94, 234, 212, 0.07) 0%,
+    rgba(20, 32, 28, 0.38) 42%,
+    rgba(5, 9, 8, 0.5) 100%
+  );
+  box-shadow:
+    0 20px 56px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   border-radius: 1.25rem;
 }
 

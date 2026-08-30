@@ -33,7 +33,7 @@ function About() {
               <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
                 Chapter · About
               </p>
-              <h2 className="text-4xl font-semibold tracking-tight text-text text-scrim md:text-5xl">
+              <h2 className="font-display text-4xl font-medium tracking-tight text-text text-scrim md:text-5xl">
                 About me
               </h2>
 

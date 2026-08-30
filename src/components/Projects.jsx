@@ -123,7 +123,7 @@ const Projects = () => {
             <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
               Chapter · Projects
             </p>
-            <h2 className="text-4xl font-bold tracking-tight text-text text-scrim md:text-6xl">
+            <h2 className="font-display text-4xl font-medium tracking-tight text-text text-scrim md:text-6xl">
               Projects
             </h2>
             <p className="mt-4 max-w-2xl text-lg font-medium text-text/90 text-scrim md:text-xl">

@@ -51,10 +51,11 @@ export const Reveal = ({
   intensity = 'kage',
   from,
   delay = 0,
+  viewport,
 }) => {
   const ref = useRef(null)
   const prefersReduced = useReducedMotion()
-  const isInView = useInView(ref, inViewOptions)
+  const isInView = useInView(ref, viewport || inViewOptions)
   const key = prefersReduced
     ? 'soft'
     : from || (intensity === 'kage' ? 'kage' : intensity)

@@ -9,7 +9,11 @@ export default function Footer() {
       id="footer"
       className="section-shell relative overflow-hidden py-12"
     >
-      <Reveal from="up" className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center">
+      <Reveal
+        from="up"
+        viewport={{ once: true, amount: 0.15, margin: '0px 0px 0px 0px' }}
+        className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center"
+      >
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
           Tommy Do
         </p>
@@ -23,7 +27,7 @@ export default function Footer() {
             Work
           </Link>
           <span aria-hidden>·</span>
-          <Link href="/contact" className="transition hover:text-accent">
+          <Link href="/#contact" className="transition hover:text-accent">
             Contact
           </Link>
         </div>
