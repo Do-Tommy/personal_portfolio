@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }) {
         <title>{siteMeta.title}</title>
         <meta name="description" content={siteMeta.description} />
       </Head>
-      <div className="min-h-screen bg-background text-text antialiased">
+      <div className="min-h-screen overflow-x-clip bg-background text-text antialiased">
         <CanopyNetwork />
         <Header />
         <Component {...pageProps} />

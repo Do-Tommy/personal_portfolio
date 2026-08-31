@@ -27,6 +27,7 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: clip;
   }
 
   body {
@@ -34,6 +35,9 @@
     font-weight: 400;
     background: var(--background);
     color: var(--text);
+    overflow-x: clip;
+    max-width: 100%;
+    overscroll-behavior-x: none;
   }
 
   h1,
@@ -138,8 +142,9 @@
 
 .text-scrim {
   text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.9),
-    0 4px 24px rgba(0, 0, 0, 0.65);
+    0 1px 2px rgba(0, 0, 0, 0.95),
+    0 2px 12px rgba(0, 0, 0, 0.8),
+    0 4px 28px rgba(0, 0, 0, 0.7);
 }
 
 @layer components {
@@ -174,6 +179,23 @@
     filter: blur(36px);
     transform: translate(-50%, -50%);
   }
+
+  @media (max-width: 767px) {
+    .landing-hero-outline {
+      color: #fff;
+      -webkit-text-stroke: 0.55px rgba(8, 12, 10, 0.95);
+      paint-order: stroke fill;
+      text-shadow:
+        0 0 1px rgba(0, 0, 0, 1),
+        0 1px 3px rgba(0, 0, 0, 0.75);
+    }
+
+    .landing-hero-accent {
+      -webkit-text-stroke: 0.45px rgba(8, 12, 10, 0.9);
+      paint-order: stroke fill;
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.95);
+    }
+  }
 }
 
 .section-shell {
@@ -182,17 +204,22 @@
 
 .skills-stack-scene {
   position: relative;
-  width: min(96vw, 54rem);
+  width: 100%;
+  max-width: 54rem;
   aspect-ratio: 16 / 10;
   margin-inline: auto;
   perspective: 900px;
   container-type: inline-size;
   isolation: isolate;
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+  contain: layout paint;
 }
 
 @media (min-width: 640px) {
   .skills-stack-scene {
-    width: min(92vw, 60rem);
+    max-width: 60rem;
     aspect-ratio: 16 / 9;
   }
 }
@@ -237,10 +264,10 @@
   filter: blur(var(--release-blur));
   transform-style: preserve-3d;
   transition:
-    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 180ms ease,
-    filter 140ms ease;
-  will-change: transform, opacity, filter;
+    transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 200ms ease;
+  will-change: transform, opacity;
 }
 
 .skills-stack-shell.is-tracking .skills-drag-plane {
@@ -258,9 +285,9 @@
 
 .skills-stack-shell.is-releasing .skills-drag-plane {
   transition:
-    transform 180ms cubic-bezier(0.32, 0, 0.2, 1),
-    opacity 90ms ease-out,
-    filter 120ms ease-out;
+    transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 220ms ease;
 }
 
 .skills-artwork {
@@ -347,7 +374,7 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(235, 246, 250, 0.55);
+  color: rgba(235, 246, 250, 0.72);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 
 const inputClass =
-  'mt-1.5 w-full rounded-xl border border-white/15 bg-black/20 px-3 py-2.5 text-text outline-none focus:border-accent/50'
+  'mt-1.5 w-full rounded-xl border border-white/15 bg-black/20 px-3 py-2.5 text-text placeholder:text-text/50 outline-none focus:border-accent/50'
 
 export function MailtoFallback({ compact = false }) {
   return (

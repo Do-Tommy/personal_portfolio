@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "og:image": "node scripts/generate-meta-image.mjs"
   },
   "dependencies": {
     "@designcodeio/threeui": "^1.1.0",
@@ -42,7 +43,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0"
+    "@svgr/webpack": "^8.1.0",
+    "sharp": "^0.35.4"
   },
   "browser": {
     "child_process": false

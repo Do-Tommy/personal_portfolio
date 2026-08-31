@@ -12,13 +12,13 @@ export default function Footer() {
       <Reveal
         from="up"
         viewport={{ once: true, amount: 0.15, margin: '0px 0px 0px 0px' }}
-        className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center"
+        className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-center radial-copy"
       >
         <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
           Tommy Do
         </p>
-        <p className="text-base font-medium text-text/85 text-scrim">Network Engineer</p>
-        <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-text/65">
+        <p className="text-base font-medium text-text text-scrim">Network Engineer</p>
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-medium text-text/80 text-scrim">
           <Link href="/#about" className="transition hover:text-accent">
             About
           </Link>

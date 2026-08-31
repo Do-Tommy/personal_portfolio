@@ -76,7 +76,8 @@ const STACK_ROTATIONS = [0, 3.4, -5.2]
 const STACK_SCALE_STEP = 0.018
 const STACK_X = [0, -4.2, 5.4]
 const STACK_Y = [0, 3.2, 6.8]
-const STACK_Z = ['0px', '-14cqw', '-28cqw']
+const RELEASE_MS = 340
+const BRING_BACK_MS = 420
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v))
@@ -113,14 +114,14 @@ function CardBody({ deck, index, total }) {
           >
             {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
           </p>
-          <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-scrim sm:text-3xl md:text-4xl">
+          <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-text text-scrim sm:text-3xl md:text-4xl">
             {deck.label}
           </h3>
-          <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-white/75 text-scrim sm:text-base md:text-lg">
+          <p className="mt-2 max-w-2xl text-sm font-medium leading-relaxed text-text/90 text-scrim sm:text-base md:text-lg">
             {deck.blurb}
           </p>
         </div>
-        <p className="shrink-0 text-[9px] font-medium uppercase tracking-[0.18em] text-white/45 sm:text-[10px]">
+        <p className="shrink-0 text-[9px] font-medium uppercase tracking-[0.18em] text-text/60 sm:text-[10px]">
           {deck.id}
         </p>
       </div>
@@ -159,6 +160,8 @@ export default function SkillsCardStack() {
   const applyStackLayout = useCallback(() => {
     const currentOrder = orderRef.current
     const top = currentOrder[currentOrder.length - 1]
+    const sceneWidth = sceneRef.current?.getBoundingClientRect().width ?? 360
+    const stackZ = [0, -sceneWidth * 0.08, -sceneWidth * 0.16]
 
     currentOrder.forEach((cardId, index) => {
       const shell = shellRefs.current[cardId]
@@ -175,7 +178,7 @@ export default function SkillsCardStack() {
       shell.dataset.depth = String(depth)
       shell.style.setProperty('--stack-x', `${STACK_X[depth] ?? 0}%`)
       shell.style.setProperty('--stack-y', `${STACK_Y[depth] ?? 0}%`)
-      shell.style.setProperty('--stack-z', STACK_Z[depth] ?? '0px')
+      shell.style.setProperty('--stack-z', `${stackZ[depth] ?? 0}px`)
 
       if (artwork) {
         artwork.style.setProperty('--stack-rotation', `${STACK_ROTATIONS[depth] ?? 0}deg`)
@@ -192,6 +195,23 @@ export default function SkillsCardStack() {
     applyStackLayout()
   }, [order, applyStackLayout])
 
+  useEffect(() => {
+    const scene = sceneRef.current
+    if (!scene || typeof ResizeObserver === 'undefined') return
+
+    let frame = 0
+    const observer = new ResizeObserver(() => {
+      if (activeDragRef.current || transitioningRef.current) return
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => applyStackLayout())
+    })
+    observer.observe(scene)
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [applyStackLayout])
+
   const sendToBack = useCallback(
     (cardId, vectorX = 1, vectorY = 0) => {
       if (transitioningRef.current || cardId !== orderRef.current[orderRef.current.length - 1]) return
@@ -206,7 +226,7 @@ export default function SkillsCardStack() {
       const directionX = vectorX / magnitude
       const directionY = vectorY / magnitude
       const distance = Math.max(190, scene.getBoundingClientRect().width * 0.66)
-      const duration = reduce ? 0 : 180
+      const duration = reduce ? 0 : RELEASE_MS
 
       shell.classList.remove('is-dragging', 'is-tracking')
       shell.classList.add('is-releasing')
@@ -221,7 +241,7 @@ export default function SkillsCardStack() {
       const plane = shell.querySelector('.skills-drag-plane')
       if (plane) {
         plane.style.opacity = duration ? '0' : ''
-        plane.style.setProperty('--release-blur', duration ? '16px' : '0px')
+        plane.style.setProperty('--release-blur', duration ? '6px' : '0px')
       }
 
       window.setTimeout(() => {
@@ -247,7 +267,7 @@ export default function SkillsCardStack() {
     if (!outgoing || !incoming || !scene) return
 
     const distance = Math.max(190, scene.getBoundingClientRect().width * 0.66)
-    const duration = reduce ? 0 : 360
+    const duration = reduce ? 0 : BRING_BACK_MS
 
     setShellTransform(incoming, -distance, 0, 0, -6, -8)
     const incomingPlane = incoming.querySelector('.skills-drag-plane')
@@ -366,12 +386,19 @@ export default function SkillsCardStack() {
 
     shell.classList.add('is-releasing')
     setShellTransform(shell)
-    window.setTimeout(() => shell.classList.remove('is-releasing'), 180)
+    window.setTimeout(() => shell.classList.remove('is-releasing'), RELEASE_MS)
   }
 
   const onScenePointerMove = useCallback(
     (event) => {
-      if (reduce || activeDragRef.current || transitioningRef.current) return
+      if (
+        reduce ||
+        activeDragRef.current ||
+        transitioningRef.current ||
+        event.pointerType === 'touch'
+      ) {
+        return
+      }
       const scene = sceneRef.current
       const topId = orderRef.current[orderRef.current.length - 1]
       const shell = shellRefs.current[topId]
@@ -410,7 +437,7 @@ export default function SkillsCardStack() {
   }, [bringPreviousToFront, sendToBack])
 
   return (
-    <div className="w-full">
+    <div className="mx-auto w-full max-w-[54rem] sm:max-w-[60rem]">
       <div
         ref={sceneRef}
         className="skills-stack-scene"

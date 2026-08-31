@@ -5,11 +5,10 @@ import { useRef } from 'react'
 
 const easeOut = [0.16, 1, 0.3, 1]
 
-// Trigger when the element crosses ~45% down the viewport.
 const inViewOptions = {
   amount: 0.12,
   once: true,
-  margin: '0px 0px -55% 0px',
+  margin: '0px 0px -8% 0px',
 }
 
 const presets = {
@@ -56,6 +55,7 @@ export const Reveal = ({
   const ref = useRef(null)
   const prefersReduced = useReducedMotion()
   const isInView = useInView(ref, viewport || inViewOptions)
+  const shouldShow = prefersReduced || isInView
   const key = prefersReduced
     ? 'soft'
     : from || (intensity === 'kage' ? 'kage' : intensity)
@@ -68,8 +68,8 @@ export const Reveal = ({
           hidden: preset.hidden,
           visible: preset.visible,
         }}
-        initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
+        initial={prefersReduced ? 'visible' : 'hidden'}
+        animate={shouldShow ? 'visible' : 'hidden'}
         transition={{
           duration: preset.duration,
           delay: prefersReduced ? 0 : delay,
@@ -92,6 +92,7 @@ export const Stagger = ({
   const ref = useRef(null)
   const prefersReduced = useReducedMotion()
   const isInView = useInView(ref, inViewOptions)
+  const shouldShow = prefersReduced || isInView
   const key = prefersReduced ? 'soft' : from === 'left' || from === 'right' ? from : 'kageSafe'
   const preset = presets[key] || presets.kageSafe
 
@@ -99,8 +100,8 @@ export const Stagger = ({
     <motion.div
       ref={ref}
       className={className}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      initial={prefersReduced ? 'visible' : 'hidden'}
+      animate={shouldShow ? 'visible' : 'hidden'}
       variants={{
         hidden: {},
         visible: {

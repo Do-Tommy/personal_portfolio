@@ -22,7 +22,7 @@ function About() {
                 src="/DSC00639.jpg"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a1210]/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#0a1210]/35" />
-              <p className="absolute bottom-4 left-4 text-[10px] font-medium uppercase tracking-[0.22em] text-white/75 text-scrim sm:left-6">
+              <p className="absolute bottom-4 left-4 text-[10px] font-medium uppercase tracking-[0.22em] text-white/85 text-scrim sm:left-6">
                 Field note · San Jose
               </p>
             </div>

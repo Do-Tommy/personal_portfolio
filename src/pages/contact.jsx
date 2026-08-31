@@ -15,7 +15,7 @@ const Contact = () => {
             <h1 className="font-display text-3xl font-medium tracking-tight text-text text-scrim">
               Get in touch
             </h1>
-            <p className="mt-2 text-sm font-medium text-text/70 text-scrim">
+            <p className="mt-2 text-sm font-medium text-text/85 text-scrim">
               Network engineering, automation, or a project idea — send a note.
             </p>
             {formId ? <ContactForm formId={formId} /> : <MailtoFallback />}
