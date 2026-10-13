@@ -34,7 +34,7 @@ const SocialMediaIcons = () => {
       </a>
       <a
         className="hover:opacity-50 transition duration-500"
-        href="/RESUME_TOMMYDO.pdf"
+        href="/RESUME_TOMMYDO.pdf?v=2026"
         target="_blank"
         title='Resume'
         rel="noreferrer"
