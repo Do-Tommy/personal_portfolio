@@ -3,10 +3,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Reveal } from '@/hooks/reveal'
-import dynamic from 'next/dynamic'
 import { useReducedMotion } from '@/hooks/motionPrefs'
 
-const LiveBadge = dynamic(() => import('@/components/threeui/LiveBadge'), { ssr: false })
+import LiveBadge from '@/components/threeui/LiveBadge'
 
 const projectLists = [
   {
@@ -30,32 +29,10 @@ const projectLists = [
     site: 'https://github.com/Do-Tommy/py-image-converter',
     status: 'GitHub',
   },
-  {
-    name: 'Personal finance tool',
-    description: 'Measure and test portfolio and market data',
-    github: null,
-    site: null,
-    status: 'Coming soon',
-  },
-  {
-    name: 'Matcha restock tracker',
-    description: 'Watch matcha restocks',
-    github: null,
-    site: null,
-    status: 'Coming soon',
-  },
-  {
-    name: 'Ravers ticketing exchange',
-    description: 'Simple ticketing platform for ravers to exchange with each other',
-    github: null,
-    site: null,
-    status: 'Coming soon',
-  },
 ]
 
 const statusClass = {
   GitHub: 'bg-sky-400/20 text-sky-200',
-  'Coming soon': 'bg-amber-400/20 text-amber-100',
 }
 
 function ProjectCard({ project, index }) {
@@ -91,7 +68,7 @@ function ProjectCard({ project, index }) {
             href={project.github}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-text text-scrim transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-text text-scrim transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             GitHub
           </a>
@@ -101,7 +78,7 @@ function ProjectCard({ project, index }) {
             href={project.site}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full bg-accent/80 px-4 py-2 text-xs font-medium text-black transition hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="rounded-full bg-accent/80 px-4 py-2.5 text-sm font-medium text-black transition hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             View site
           </a>
@@ -120,14 +97,14 @@ const Projects = () => {
       <section className="relative z-10 w-full max-w-7xl px-6 md:px-10">
         <Reveal from="up">
           <div className="radial-copy max-w-2xl">
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
               Chapter · Projects
             </p>
             <h2 className="font-display text-4xl font-medium tracking-tight text-text text-scrim md:text-6xl">
               Projects
             </h2>
             <p className="mt-4 max-w-2xl text-lg font-medium text-text/90 text-scrim md:text-xl">
-              Personal builds — live tools and experiments on the way to GitHub.
+              Personal builds — small tools shipped and open on GitHub.
             </p>
           </div>
         </Reveal>

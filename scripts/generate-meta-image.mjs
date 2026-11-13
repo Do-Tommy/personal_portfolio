@@ -3,7 +3,7 @@ import path from 'node:path'
 import sharp from 'sharp'
 
 const root = path.resolve(import.meta.dirname, '..')
-const outPath = path.join(root, 'public', 'metaImage.png')
+const outPath = path.join(root, 'public', 'metaImage.jpg')
 const photoPath = path.join(root, 'public', 'DSC00639.jpg')
 
 const width = 1200
@@ -68,7 +68,8 @@ await sharp(background)
     { input: subject, left: photoLeft, top: 0 },
     { input: overlay, left: 0, top: 0 },
   ])
-  .png({ compressionLevel: 9 })
+  .flatten({ background: panelBg })
+  .jpeg({ quality: 88, mozjpeg: true })
   .toFile(outPath)
 
 const stats = await fs.stat(outPath)

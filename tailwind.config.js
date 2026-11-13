@@ -1,7 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const withMT = require('@material-tailwind/react/utils/withMT')
-
-module.exports = withMT({
+module.exports = {
   darkMode: 'class',
   content: [
     './pages/**/*.{js,jsx}',
@@ -19,15 +17,16 @@ module.exports = withMT({
     },
     extend: {
       fontFamily: {
-        sans: ['Lexend', 'system-ui', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'Times New Roman', 'serif'],
+        sans: ['Lexend Variable', 'Lexend', 'system-ui', 'sans-serif'],
+        display: ['Fraunces Variable', 'Fraunces', 'Georgia', 'Times New Roman', 'serif'],
       },
       colors: {
-        text: 'var(--text)',
-        background: 'var(--background)',
-        primary: 'var(--primary)',
-        secondary: 'var(--secondary)',
-        accent: 'var(--accent)',
+        // RGB channel vars so opacity modifiers (bg-accent/80, text-text/85) generate CSS.
+        text: 'rgb(var(--text-rgb) / <alpha-value>)',
+        background: 'rgb(var(--background-rgb) / <alpha-value>)',
+        primary: 'rgb(var(--primary-rgb) / <alpha-value>)',
+        secondary: 'rgb(var(--secondary-rgb) / <alpha-value>)',
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
       },
       keyframes: {
         'accordion-down': {
@@ -51,4 +50,4 @@ module.exports = withMT({
     },
   },
   plugins: [require('tailwindcss-animate')],
-})
+}

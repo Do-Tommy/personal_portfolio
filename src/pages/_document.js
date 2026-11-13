@@ -7,8 +7,19 @@ export default function Document() {
   return (
     <Html lang="en" className="scroll-smooth dark">
       <Head>
-        <link rel="shortcut icon" href="/icon.png" />
-        <meta name="description" content={siteMeta.description} />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <meta name="theme-color" content="#0a1210" />
+        {/* Scroll reveals start hidden and are shown by JS; without JS, show everything. */}
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html:
+                '[style*="opacity:0"]{opacity:1!important;transform:none!important;filter:none!important}',
+            }}
+          />
+        </noscript>
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={siteMeta.siteName} />
         <meta property="og:locale" content={siteMeta.locale} />

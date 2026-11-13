@@ -16,7 +16,7 @@ export default function ContactSection() {
       <div className="relative z-10 mx-auto w-full max-w-5xl px-6 md:px-10">
         <Reveal from="up" viewport={{ once: true, amount: 0.15, margin: '0px 0px 0px 0px' }}>
           <div className="radial-copy mx-auto max-w-2xl text-center">
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
               Chapter · Contact
             </p>
             <h2 className="font-display text-4xl font-medium tracking-tight text-white text-scrim md:text-5xl">

@@ -1,50 +1,42 @@
+import { FaLinkedinIn, FaGithub, FaSpotify } from 'react-icons/fa'
+import { FiFileText } from 'react-icons/fi'
 
-import Link from 'next/link';
+const links = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/tommy-do-9aaa26169/', Icon: FaLinkedinIn },
+  { label: 'GitHub', href: 'https://github.com/do-tommy', Icon: FaGithub },
+  { label: 'Spotify', href: 'https://open.spotify.com/user/hjvo7uwfnnzw822obtp4db5il', Icon: FaSpotify },
+]
 
+const iconLinkClass =
+  'inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md transition duration-150 hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
 
 const SocialMediaIcons = () => {
-    return (
-        <div className="mt-2 flex justify-center gap-6 md:justify-start">
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      {links.map(({ label, href, Icon }) => (
+        <a
+          key={label}
+          className={iconLinkClass}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={label}
+          title={label}
+        >
+          <Icon className="h-5 w-5" aria-hidden />
+        </a>
+      ))}
       <a
-        className="hover:opacity-50 transition duration-500"
-        href="https://www.linkedin.com/in/tommy-do-9aaa26169/"
-        target="_blank"
-        title='LinkedIn'
-        rel="noreferrer"
-      >
-        <img alt="linkedin-link" src="https://img.icons8.com/color/48/linkedin.png" />
-      </a>
-      <a
-        className="hover:opacity-50 transition duration-500"
-        href="https://github.com/do-tommy"
-        target="_blank"
-        title='Github'
-        rel="noreferrer"
-      >
-        <img alt="twitter-link" src="https://img.icons8.com/color/48/github.png" />
-      </a>
-      <a
-        className="hover:opacity-50 transition duration-500"
-        href="https://open.spotify.com/user/hjvo7uwfnnzw822obtp4db5il"
-        title='Spotify'
-        target="_blank"
-        rel="noreferrer"
-      >
-        <img alt="twitter-link" src="https://img.icons8.com/color/48/spotify--v1.png" />
-      </a>
-      <a
-        className="hover:opacity-50 transition duration-500"
+        className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 text-sm font-medium text-white backdrop-blur-md transition duration-150 hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         href="/RESUME_TOMMYDO.pdf?v=2026"
         target="_blank"
-        title='Resume'
         rel="noreferrer"
       >
-        <img width="48" height="48" src="https://img.icons8.com/officel/48/parse-from-clipboard.png" alt="parse-from-clipboard"/>
+        <FiFileText className="h-4 w-4" aria-hidden />
+        Resume
       </a>
     </div>
-     
-      
-    );
-  };
-  
-  export default SocialMediaIcons;
+  )
+}
+
+export default SocialMediaIcons

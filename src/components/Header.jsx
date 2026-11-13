@@ -50,7 +50,7 @@ const Header = () => {
         <button
           type="button"
           onClick={() => setActive(!active)}
-          className="relative z-50 cursor-pointer text-text md:hidden"
+          className="relative z-50 -mr-2 flex h-11 w-11 cursor-pointer items-center justify-center text-text md:hidden"
           aria-label={active ? 'Close menu' : 'Open menu'}
           aria-expanded={active}
         >

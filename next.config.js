@@ -3,7 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@designcodeio/threeui'],
   images: {
-    domains: ['media.california.com', 'bairesdev.mo.cloudinary.net'],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
   webpack(config, { isServer }) {
     config.module.rules.push({
