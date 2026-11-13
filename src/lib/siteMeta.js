@@ -5,7 +5,7 @@ export const siteMeta = {
   title: 'Tommy Do | Network Engineer',
   description:
     'Builds reliable networks and the software that operates them — bare metal, routing, observability, and automation.',
-  ogImagePath: '/metaImage.png?v=9',
+  ogImagePath: '/metaImage.jpg?v=10',
   ogImageAlt: 'Tommy Do — Network Engineer portfolio',
   locale: 'en_US',
   siteName: 'Tommy Do',

@@ -13,7 +13,7 @@ const workItems = [
   },
   {
     title: 'Cabinet and router migrations',
-    body: 'Full network cabinet migrations with uplink uptime around 99%. Router migrations planned and executed for near-zero downtime.',
+    body: 'Full network cabinet migrations and router migrations, planned and executed for near-zero downtime.',
     tags: ['migrations', 'BGP', 'uptime'],
   },
   {
@@ -52,7 +52,7 @@ function WorkCard({ item, index }) {
       />
       <div className="grid gap-5 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)] md:gap-10 md:pl-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-accent/80 text-scrim">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent/80 text-scrim">
             {number}
           </p>
           <h3 className="mt-2 text-xl font-semibold tracking-tight text-text text-scrim md:text-2xl lg:text-[1.65rem]">
@@ -62,7 +62,7 @@ function WorkCard({ item, index }) {
             {item.tags.map((tag) => (
               <li
                 key={tag}
-                className="rounded-full border border-accent/25 bg-accent/10 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-accent/90 text-scrim"
+                className="rounded-full border border-accent/25 bg-accent/10 px-2.5 py-1 text-xs font-medium uppercase tracking-[0.08em] text-accent/90 text-scrim"
               >
                 {tag}
               </li>
@@ -86,7 +86,7 @@ function Work() {
       <section className="relative z-10 mx-auto w-full max-w-5xl px-6 md:px-10">
         <div className="radial-copy">
           <Reveal from="up">
-            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
               Chapter · Work
             </p>
             <h2 className="font-display text-4xl font-medium tracking-tight text-text text-scrim md:text-5xl">
@@ -96,6 +96,13 @@ function Work() {
               Network engineering and internal tooling at scale — migrations,
               observability, and automation that keep bare metal and routing
               reliable.
+            </p>
+            <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-white/15 bg-black/30 px-4 py-2.5 text-sm font-medium text-text text-scrim md:text-base">
+              <span className="font-semibold">NOC / Network Engineer</span>
+              <span aria-hidden className="text-accent">·</span>
+              <span>OpenColo, San Jose, CA</span>
+              <span aria-hidden className="text-accent">·</span>
+              <span>2024 – Present</span>
             </p>
           </Reveal>
 

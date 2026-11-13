@@ -211,10 +211,48 @@ function buildForest(w, heroH, pageH) {
     })
   }
 
+  // Rest positions and vertical extent of every subtree. Branches are stored in
+  // pre-order, so a subtree is the contiguous run [i, i + _span) and the draw
+  // loop can skip whole off-screen subtrees instead of updating every branch.
+  branches.forEach((b) => {
+    b.root = b.parent ? b.parent.root : b
+    if (b.parent) {
+      const pe = getBranchEnd(b.parent, 1, 0, 0, 0)
+      b.x0 = pe.x
+      b.y0 = pe.y
+    }
+    const end = getBranchEnd(b, 1, 0, 0, 0)
+    b._minY = Math.min(b.y0, end.y)
+    b._maxY = Math.max(b.y0, end.y)
+    b._span = 1
+  })
+  for (let i = branches.length - 1; i >= 0; i -= 1) {
+    const b = branches[i]
+    if (!b.parent) continue
+    b.parent._minY = Math.min(b.parent._minY, b._minY)
+    b.parent._maxY = Math.max(b.parent._maxY, b._maxY)
+    b.parent._span += b._span
+  }
+  // Leaves are created before their branch has a position, so place them now.
+  leaves.forEach((leaf) => {
+    const tip = getBranchEnd(leaf.branch, 1, 0, 0, 0)
+    leaf.x = tip.x
+    leaf.y = tip.y
+  })
+
   return { branches, leaves, trees, hintTree }
 }
 
+// Document-space boxes; cached and invalidated on resize so the draw loop does
+// not measure layout every frame.
+let boxCache = null
 function sectionBoxes() {
+  if (boxCache) return boxCache
+  boxCache = measureSectionBoxes()
+  return boxCache
+}
+
+function measureSectionBoxes() {
   return ['contact', 'footer']
     .map((id) => {
       const el = document.getElementById(id)
@@ -246,13 +284,18 @@ function pull(mx, my, x, y, radius, strength) {
   }
 }
 
+const CULL_MARGIN = 360
+// Leaves are culled on a tighter band than branches so every drawn leaf sits on
+// a branch chain that was updated this frame.
+const LEAF_INSET = 160
+
 export default function CanopyNetwork() {
   const canvasRef = useRef(null)
   const wrapRef = useRef(null)
   const hintBtnRef = useRef(null)
   const hintOnRef = useRef(true)
   const reduce = useReducedMotion()
-  const [hintOn, setHintOn] = useState(true)
+  const [hintOn, setHintOn] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -281,6 +324,7 @@ export default function CanopyNetwork() {
     let lastPageH = 0
 
     const resize = () => {
+      boxCache = null
       const dpr = Math.min(1.5, window.devicePixelRatio || 1)
       const width = window.innerWidth
       const height = window.innerHeight
@@ -548,26 +592,36 @@ export default function CanopyNetwork() {
         root._wind = Math.max(-1, Math.min(1, (mx - root.rootX) / (pageW * 0.45))) * (0.35 + prox * 0.65)
       })
 
-      branches.forEach((b) => {
+      // Sway can swing a tip well past its rest position, hence the margin.
+      const cullTop = scrollY - CULL_MARGIN
+      const cullBot = scrollY + height + CULL_MARGIN
+      const offscreen = (b) => b._maxY < cullTop || b._minY > cullBot
+
+      for (let i = 0; i < branches.length; ) {
+        const b = branches[i]
+        if (offscreen(b)) {
+          i += b._span
+          continue
+        }
         if (b.parent) {
-          const root = (() => {
-            let n = b
-            while (n.parent) n = n.parent
-            return n
-          })()
-          const pe = getBranchEnd(b.parent, 1, now, root._wind || 0, shake)
+          const pe = getBranchEnd(b.parent, 1, now, b.root._wind || 0, shake)
           b.x0 = pe.x
           b.y0 = pe.y
         }
-      })
+        i += 1
+      }
 
       updateHintBubble(now, scrollY, height, branches)
 
-      branches.forEach((b) => {
-        let n = b
-        while (n.parent) n = n.parent
-        drawBranch(b, now, n._wind || 0, grow)
-      })
+      for (let i = 0; i < branches.length; ) {
+        const b = branches[i]
+        if (offscreen(b)) {
+          i += b._span
+          continue
+        }
+        drawBranch(b, now, b.root._wind || 0, grow)
+        i += 1
+      }
 
       if (!reduce && grow > 0.42) {
         spawnAcc += dt
@@ -604,6 +658,7 @@ export default function CanopyNetwork() {
 
       leaves.forEach((leaf) => {
         if (grow < 0.28) return
+        if (leaf.y < cullTop + LEAF_INSET || leaf.y > cullBot - LEAF_INSET) return
         const appear = Math.max(0, Math.min(1, (grow - 0.28) / 0.4))
         const end = getBranchEnd(leaf.branch, 1, now, 0, shake)
         const p = pull(mx, my, end.x, end.y, 170, 36 + shake * 28)
@@ -720,7 +775,7 @@ export default function CanopyNetwork() {
         <button
           ref={hintBtnRef}
           type="button"
-          className="pointer-events-auto fixed z-10 rounded-full border border-accent/60 bg-[rgba(8,14,12,0.92)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent shadow-[0_4px_20px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:border-accent hover:bg-[rgba(8,14,12,0.98)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="pointer-events-auto fixed z-10 rounded-full border border-accent/60 bg-[rgba(8,14,12,0.92)] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent shadow-[0_4px_20px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:border-accent hover:bg-[rgba(8,14,12,0.98)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           style={{ left: 0, top: 0, opacity: 0 }}
           onClick={() => window.dispatchEvent(new CustomEvent('canopy-hint'))}
         >
