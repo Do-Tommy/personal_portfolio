@@ -1,14 +1,12 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
 import { Reveal, Stagger } from '@/hooks/reveal'
-import { useReducedMotion } from '@/hooks/motionPrefs'
 
 const workItems = [
   {
     title: 'Geofeed pipeline',
-    body: 'Created and maintain organizational geofeed served with nginx. Scripts manage, update, and verify geofeed files for multiple IP databases (MaxMind, IPBase, and others).',
+    body: 'Built and maintain the organization’s geofeed, served with nginx. Scripts update and verify entries across MaxMind, IPBase, and other IP databases.',
     tags: ['nginx', 'geofeed', 'MaxMind', 'automation'],
   },
   {
@@ -18,36 +16,26 @@ const workItems = [
   },
   {
     title: 'Grafana and Prometheus observability',
-    body: 'Full Grafana + Prometheus setup with exporters and dashboards: provider and peer status, in/out rate dips and peaks, spine and leaf switch port visibility and bandwidth, system status and logs. Alerts for network drops, BGP peering changes, and critical logs. Export via SNMP and gNMI into Prometheus.',
+    body: 'Grafana and Prometheus stack fed by SNMP and gNMI: provider and peer status, spine and leaf port bandwidth, system logs. Alerts on network drops and BGP peering changes.',
     tags: ['Grafana', 'Prometheus', 'SNMP', 'gNMI', 'alerting'],
   },
   {
     title: 'Customer network buildouts (140+ servers)',
-    body: 'Customer full network setups from uplink switches/routers to downstream servers (140+). Routing redundancy architectures and quick server setup automation.',
+    body: 'Full customer networks from uplink routers down to 140+ servers, with redundant routing and automated server setup.',
     tags: ['bare metal', 'routing', 'automation', '140+ servers'],
   },
   {
     title: 'Internal tools migration',
-    body: 'Migrated internal tooling from PHP 8 to Python / Svelte / FastAPI — roughly 10x efficiency through automation APIs and version-controlled network changes. Portal for network selection to configuration, one-click create/delete with idempotency, automatic network backups with config history and diffs, searchable IP tables, IPMI database, audit logs and admin panel, plus a data-hall fiber distance measuring tool.',
+    body: 'Moved internal tooling from PHP 8 to Python, FastAPI, and Svelte — roughly 10x faster operations. One portal covers network configuration, config backups with diffs, IP and IPMI tables, and audit logs.',
     tags: ['Python', 'Svelte', 'FastAPI', 'idempotency', 'portal'],
   },
 ]
 
 function WorkCard({ item, index }) {
-  const reduce = useReducedMotion()
   const number = String(index + 1).padStart(2, '0')
 
   return (
-    <motion.article
-      className="glass-plate group relative overflow-hidden p-6 md:p-8"
-      initial={reduce ? false : { opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.05 }}
-      transition={
-        reduce ? { duration: 0 } : { duration: 0.85, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }
-      }
-      whileHover={reduce ? undefined : { y: -4, scale: 1.005 }}
-    >
+    <article className="glass-plate group relative overflow-hidden p-6 transition-transform duration-200 hover:-translate-y-0.5 md:p-8">
       <span
         aria-hidden
         className="pointer-events-none absolute inset-y-6 left-0 w-1 rounded-r-full bg-gradient-to-b from-accent/90 via-accent/40 to-transparent opacity-80 transition-opacity group-hover:opacity-100"
@@ -75,7 +63,7 @@ function WorkCard({ item, index }) {
           {item.body}
         </p>
       </div>
-    </motion.article>
+    </article>
   )
 }
 

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
+import { FiPause, FiPlay } from 'react-icons/fi'
 import { useReducedMotion } from '@/hooks/motionPrefs'
 
 function mulberry32(seed) {
@@ -198,13 +199,12 @@ function buildForest(w, heroH, pageH) {
       anchor.getBoundingClientRect().top + window.scrollY + anchor.offsetHeight * 0.72
     const bottomSpecs = isNarrow
       ? [
-          { x: w * 0.12, y: baseY, lean: -0.18, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.14 },
-          { x: w * 0.88, y: baseY, lean: 0.18, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.1 },
+          { x: w * 0.03, y: baseY, lean: -0.1, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.14 },
+          { x: w * 0.97, y: baseY, lean: 0.1, len: heroH * 0.42, thick: 20, depth: 7, delay: 0.1 },
         ]
       : [
           { x: w * 0.07, y: baseY, lean: -0.16, len: heroH * 0.5, thick: 26, depth: 8, delay: 0.14 },
           { x: w * 0.93, y: baseY, lean: 0.16, len: heroH * 0.5, thick: 26, depth: 8, delay: 0.1 },
-          { x: w * 0.5, y: baseY + heroH * 0.04, lean: 0.04, len: heroH * 0.36, thick: 18, depth: 6, delay: 0.18 },
         ]
     bottomSpecs.forEach((spec) => {
       trees.push(plantTree(branches, leaves, rng, spec))
@@ -284,6 +284,7 @@ function pull(mx, my, x, y, radius, strength) {
   }
 }
 
+const PAUSE_KEY = 'canopy-paused'
 const CULL_MARGIN = 360
 // Leaves are culled on a tighter band than branches so every drawn leaf sits on
 // a branch chain that was updated this frame.
@@ -296,6 +297,29 @@ export default function CanopyNetwork() {
   const hintOnRef = useRef(true)
   const reduce = useReducedMotion()
   const [hintOn, setHintOn] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
+  const loopRef = useRef({ resume: () => {}, redraw: () => {} })
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(PAUSE_KEY) === '1') {
+        pausedRef.current = true
+        setPaused(true)
+      }
+    } catch {}
+  }, [])
+
+  const togglePaused = () => {
+    const next = !pausedRef.current
+    pausedRef.current = next
+    setPaused(next)
+    try {
+      window.localStorage.setItem(PAUSE_KEY, next ? '1' : '0')
+    } catch {}
+    if (next) loopRef.current.redraw()
+    else loopRef.current.resume()
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -316,7 +340,12 @@ export default function CanopyNetwork() {
       ty: heroH * 0.4,
     }
     let shake = 0
-    const started = performance.now()
+    // Simulation clock: it only advances while the canopy is animating, so a
+    // paused canopy holds its pose and resumes from it.
+    let sim = 0
+    let lastReal = performance.now()
+    let redrawQueued = false
+    const isStatic = () => reduce || pausedRef.current
     const fallers = []
     const landed = []
     let spawnAcc = 0
@@ -336,6 +365,7 @@ export default function CanopyNetwork() {
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      redrawSoon()
       const pageH = Math.max(document.documentElement.scrollHeight, height)
       if (!forest || Math.abs(pageH - lastPageH) > 120 || width !== forest._w) {
         forest = buildForest(width, heroH, pageH)
@@ -361,12 +391,12 @@ export default function CanopyNetwork() {
       el?.closest?.('a, button, input, textarea, select, [role="button"], [role="region"]')
 
     const burstFrom = (docX, docY) => {
-      if (!forest || reduce) return
+      if (!forest || isStatic()) return
       const pool = forest.leaves
       const n = Math.min(28, pool.length)
       for (let i = 0; i < n; i += 1) {
         const src = pool[(rng() * pool.length) | 0]
-        const end = getBranchEnd(src.branch, 1, performance.now(), 0, shake)
+        const end = getBranchEnd(src.branch, 1, sim, 0, shake)
         fallers.push({
           x: end.x + (rng() - 0.5) * 28,
           y: end.y + (rng() - 0.5) * 16,
@@ -563,15 +593,21 @@ export default function CanopyNetwork() {
       }
     }
 
-    const draw = (now) => {
+    const draw = () => {
       if (!running) return
+      const still = isStatic()
+      const real = performance.now()
+      if (!still) sim += Math.min(50, real - lastReal)
+      lastReal = real
+      const now = sim
+      if (still) fallers.length = 0
       const width = window.innerWidth
       const height = window.innerHeight
       const scrollY = window.scrollY
       if (!forest) resize()
       const { branches, leaves, trees } = forest
-      const elapsed = (now - started) / 1000
-      const grow = reduce ? 1 : easeOut(Math.min(1, elapsed * 0.3))
+      const elapsed = now / 1000
+      const grow = still ? 1 : easeOut(Math.min(1, elapsed * 0.3))
       const dt = 0.016
 
       mouse.x += (mouse.tx - mouse.x) * 0.12
@@ -623,7 +659,7 @@ export default function CanopyNetwork() {
         i += 1
       }
 
-      if (!reduce && grow > 0.42) {
+      if (!still && grow > 0.42) {
         spawnAcc += dt
         const contactBox = sectionBoxes().find((b) => b.id === 'contact')
         const inContactZone =
@@ -662,7 +698,7 @@ export default function CanopyNetwork() {
         const appear = Math.max(0, Math.min(1, (grow - 0.28) / 0.4))
         const end = getBranchEnd(leaf.branch, 1, now, 0, shake)
         const p = pull(mx, my, end.x, end.y, 170, 36 + shake * 28)
-        if (!reduce && p.t > 0.72 && rng() > 0.92) {
+        if (!still && p.t > 0.72 && rng() > 0.92) {
           spawnFaller({ ...leaf, x: end.x, y: end.y }, 0.45)
         }
         const sway = Math.sin(elapsed * 1.1 + leaf.phase) * 6 + p.x
@@ -739,8 +775,27 @@ export default function CanopyNetwork() {
         )
       })
 
-      raf = requestAnimationFrame(draw)
+      if (!still) raf = requestAnimationFrame(draw)
     }
+
+    // While still, the canopy is only redrawn when the page moves under it.
+    const redrawSoon = () => {
+      if (!isStatic() || redrawQueued) return
+      redrawQueued = true
+      requestAnimationFrame(() => {
+        redrawQueued = false
+        draw()
+      })
+    }
+    loopRef.current = {
+      redraw: redrawSoon,
+      resume: () => {
+        cancelAnimationFrame(raf)
+        lastReal = performance.now()
+        raf = requestAnimationFrame(draw)
+      },
+    }
+    window.addEventListener('scroll', redrawSoon, { passive: true })
 
     resize()
     window.addEventListener('resize', resize)
@@ -762,6 +817,7 @@ export default function CanopyNetwork() {
       window.clearTimeout(later)
       ro?.disconnect()
       window.removeEventListener('resize', resize)
+      window.removeEventListener('scroll', redrawSoon)
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerdown', onDown)
       window.removeEventListener('canopy-hint', onHint)
@@ -769,6 +825,19 @@ export default function CanopyNetwork() {
   }, [reduce])
 
   return (
+    <>
+    {!reduce && (
+      <button
+        type="button"
+        onClick={togglePaused}
+        aria-pressed={paused}
+        aria-label={paused ? 'Play background animation' : 'Pause background animation'}
+        title={paused ? 'Play background animation' : 'Pause background animation'}
+        className="fixed bottom-4 right-4 z-30 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#0a1210]/85 text-text/80 backdrop-blur-md transition hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        {paused ? <FiPlay className="h-4 w-4" aria-hidden /> : <FiPause className="h-4 w-4" aria-hidden />}
+      </button>
+    )}
     <div ref={wrapRef} className="pointer-events-none fixed inset-0 z-[4] max-md:opacity-50" aria-hidden>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {!reduce && hintOn && (
@@ -783,5 +852,6 @@ export default function CanopyNetwork() {
         </button>
       )}
     </div>
+    </>
   )
 }

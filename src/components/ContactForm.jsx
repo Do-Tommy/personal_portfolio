@@ -10,12 +10,8 @@ export function MailtoFallback({ compact = false }) {
   <div className={compact ? '' : 'mt-8'}>
     <a
       href="mailto:hello@tommydo.dev?subject=Portfolio%20contact"
-      className="group relative inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:hover:scale-100"
+      className="btn-primary btn-lg w-full disabled:opacity-60"
     >
-      <span
-        className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-accent/40 blur-xl"
-        aria-hidden
-      />
       Email hello@tommydo.dev
     </a>
   </div>
@@ -90,12 +86,8 @@ export default function ContactForm({ formId, compact = false }) {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="group relative inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:scale-[1.01] disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:hover:scale-100"
+        className="btn-primary btn-lg w-full disabled:opacity-60"
       >
-        <span
-          className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-accent/40 blur-xl"
-          aria-hidden
-        />
         {status === 'submitting' ? 'Sending…' : 'Send message'}
       </button>
     </form>

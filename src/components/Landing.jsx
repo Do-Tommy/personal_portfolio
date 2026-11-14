@@ -33,13 +33,13 @@ const Landing = () => {
           <div className="mx-auto mt-9 flex max-w-sm flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-4">
             <a
               href="#work"
-              className="inline-flex min-h-[3rem] items-center justify-center rounded-full bg-accent px-7 py-3 text-sm font-semibold text-[#06201b] transition duration-150 hover:bg-accent/85 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="btn-primary btn-lg"
             >
               View work
             </a>
             <Link
               href="#contact"
-              className="inline-flex min-h-[3rem] items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 py-3 text-sm font-medium text-white transition duration-150 hover:border-white/50 hover:bg-white/10 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              className="btn-secondary btn-lg"
             >
               Get in touch
             </Link>

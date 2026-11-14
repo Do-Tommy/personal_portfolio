@@ -8,7 +8,7 @@ const Contact = () => {
   const formId = process.env.NEXT_PUBLIC_FORM
 
   return (
-    <div className="section-shell relative min-h-[100svh] overflow-hidden">
+    <main id="main" className="section-shell relative min-h-[100svh] overflow-hidden">
       <div className="relative z-10 mx-auto mt-28 max-w-xl px-6 pb-24">
         <Reveal from="up">
           <div className="glass-plate p-6 md:p-8">
@@ -22,7 +22,7 @@ const Contact = () => {
           </div>
         </Reveal>
       </div>
-    </div>
+    </main>
   )
 }
 

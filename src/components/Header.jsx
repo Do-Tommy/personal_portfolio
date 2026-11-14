@@ -5,7 +5,6 @@ import { RxHamburgerMenu, RxCrossCircled } from 'react-icons/rx'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 
 const navItems = [
   { name: 'Home', link: '/#landing' },
@@ -64,9 +63,7 @@ const Header = () => {
         <nav className="hidden md:flex md:flex-row md:items-center md:gap-1">
           {navItems.map((item) => (
             <Link key={item.name} href={item.link} scroll={false} className={navLinkClass}>
-              <motion.span whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                {item.name}
-              </motion.span>
+              {item.name}
             </Link>
           ))}
         </nav>
