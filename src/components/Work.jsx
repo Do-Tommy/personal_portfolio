@@ -41,9 +41,11 @@ function WorkCard({ item, index }) {
     <motion.article
       className="glass-plate group relative overflow-hidden p-6 md:p-8"
       initial={reduce ? false : { opacity: 0, y: 28 }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.85, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={
+        reduce ? { duration: 0 } : { duration: 0.85, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }
+      }
       whileHover={reduce ? undefined : { y: -4, scale: 1.005 }}
     >
       <span
@@ -97,11 +99,11 @@ function Work() {
               observability, and automation that keep bare metal and routing
               reliable.
             </p>
-            <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-white/15 bg-black/30 px-4 py-2.5 text-sm font-medium text-text text-scrim md:text-base">
+            <p className="mt-6 inline-flex flex-col gap-x-3 gap-y-0.5 rounded-2xl sm:flex-row sm:flex-wrap sm:items-center border border-white/15 bg-black/30 px-4 py-2.5 text-sm font-medium text-text text-scrim md:text-base">
               <span className="font-semibold">NOC / Network Engineer</span>
-              <span aria-hidden className="text-accent">·</span>
+              <span aria-hidden className="hidden text-accent sm:inline">·</span>
               <span>OpenColo, San Jose, CA</span>
-              <span aria-hidden className="text-accent">·</span>
+              <span aria-hidden className="hidden text-accent sm:inline">·</span>
               <span>2024 – Present</span>
             </p>
           </Reveal>

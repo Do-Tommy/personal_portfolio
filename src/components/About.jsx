@@ -29,7 +29,7 @@ function About() {
           </Reveal>
 
           <Reveal from="right" delay={0.18} className="flex w-full flex-col justify-center">
-            <div className="radial-copy mx-4 mt-6 px-6 py-10 sm:mx-6 md:mx-8 lg:mx-0 lg:mt-0 lg:px-10 lg:py-14 xl:px-14">
+            <div className="radial-copy mt-6 px-6 py-10 md:px-10 lg:mx-0 lg:mt-0 lg:px-10 lg:py-14 xl:px-14">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
                 Chapter · About
               </p>

@@ -42,9 +42,11 @@ function ProjectCard({ project, index }) {
     <motion.article
       className="glass-plate group flex flex-col p-6 md:p-7"
       initial={reduce ? false : { opacity: 0, y: 36, x: index % 2 === 0 ? -20 : 20 }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, amount: 0.15, margin: '0px 0px -8% 0px' }}
-      transition={{ duration: 1.2, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+      whileInView={{ opacity: 1, y: 0, x: 0 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={
+        reduce ? { duration: 0 } : { duration: 1.2, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }
+      }
       whileHover={reduce ? undefined : { y: -4, scale: 1.01 }}
     >
       <div className="flex items-start justify-between gap-2">
@@ -68,7 +70,7 @@ function ProjectCard({ project, index }) {
             href={project.github}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-text text-scrim transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="inline-flex min-h-[2.75rem] items-center rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-text text-scrim transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             GitHub
           </a>
@@ -78,7 +80,7 @@ function ProjectCard({ project, index }) {
             href={project.site}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full bg-accent/80 px-4 py-2.5 text-sm font-medium text-black transition hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="inline-flex min-h-[2.75rem] items-center rounded-full bg-accent/80 px-4 py-2.5 text-sm font-medium text-black transition hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
             View site
           </a>

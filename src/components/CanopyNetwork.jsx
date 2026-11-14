@@ -769,7 +769,7 @@ export default function CanopyNetwork() {
   }, [reduce])
 
   return (
-    <div ref={wrapRef} className="pointer-events-none fixed inset-0 z-[4]" aria-hidden>
+    <div ref={wrapRef} className="pointer-events-none fixed inset-0 z-[4] max-md:opacity-50" aria-hidden>
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       {!reduce && hintOn && (
         <button
