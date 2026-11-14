@@ -22,6 +22,12 @@ export default function App({ Component, pageProps }) {
         <link rel="canonical" href={absoluteUrl(pathname)} />
       </Head>
       <div className="min-h-screen overflow-x-clip bg-background text-text antialiased">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#06201b]"
+        >
+          Skip to content
+        </a>
         <CanopyNetwork />
         <Header />
         <Component {...pageProps} />

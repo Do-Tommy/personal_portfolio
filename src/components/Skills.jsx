@@ -99,7 +99,7 @@ const Skills = () => {
       id="skills"
       className="section-shell relative flex items-center justify-center overflow-x-clip py-16 md:py-28"
     >
-      <section className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-10">
+      <section className="relative z-10 mx-auto w-full max-w-6xl px-6 md:px-10">
         <Reveal from="up">
           <div className="radial-copy mx-auto max-w-2xl px-2 py-6 text-center md:px-0 md:py-0">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">

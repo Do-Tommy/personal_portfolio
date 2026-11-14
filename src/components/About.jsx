@@ -22,14 +22,11 @@ function About() {
                 src="/DSC00639.jpg"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a1210]/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#0a1210]/35" />
-              <p className="absolute bottom-4 left-4 text-xs font-medium uppercase tracking-[0.22em] text-white/85 text-scrim sm:left-6">
-                Field note · San Jose
-              </p>
             </div>
           </Reveal>
 
           <Reveal from="right" delay={0.18} className="flex w-full flex-col justify-center">
-            <div className="radial-copy mx-4 mt-6 px-6 py-10 sm:mx-6 md:mx-8 lg:mx-0 lg:mt-0 lg:px-10 lg:py-14 xl:px-14">
+            <div className="radial-copy mt-6 px-6 py-10 md:px-10 lg:mx-0 lg:mt-0 lg:px-10 lg:py-14 xl:px-14">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-accent text-scrim">
                 Chapter · About
               </p>

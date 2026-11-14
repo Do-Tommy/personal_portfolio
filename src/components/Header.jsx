@@ -5,7 +5,6 @@ import { RxHamburgerMenu, RxCrossCircled } from 'react-icons/rx'
 import useMediaQuery from '@/hooks/useMediaQuery'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 
 const navItems = [
   { name: 'Home', link: '/#landing' },
@@ -39,8 +38,8 @@ const Header = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 w-full">
-      <div className="relative flex h-16 items-center justify-between border-b border-white/10 bg-[#0a1210]/70 px-4 backdrop-blur-md md:mx-auto md:mt-4 md:h-[4.25rem] md:max-w-6xl md:rounded-2xl md:border md:border-white/12 md:bg-[#0a1210]/55 md:px-8 md:shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
-        <Link className="flex items-center gap-3" href={navItems[0].link} onClick={() => setActive(false)}>
+      <div className="relative flex h-16 items-center justify-between border-b border-white/10 bg-[#0a1210]/85 px-6 backdrop-blur-md md:mx-auto md:mt-4 md:h-[4.25rem] md:max-w-6xl md:rounded-2xl md:border md:border-white/12 md:bg-[#0a1210]/55 md:px-8 md:shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+        <Link className="flex min-h-[2.75rem] items-center gap-3" href={navItems[0].link} onClick={() => setActive(false)}>
           <Image src="/homeicon.png" alt="" width={40} height={40} />
           <span className="text-xl font-medium tracking-tight text-text text-scrim hover:text-accent">
             Tommy Do
@@ -64,36 +63,29 @@ const Header = () => {
         <nav className="hidden md:flex md:flex-row md:items-center md:gap-1">
           {navItems.map((item) => (
             <Link key={item.name} href={item.link} scroll={false} className={navLinkClass}>
-              <motion.span whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                {item.name}
-              </motion.span>
+              {item.name}
             </Link>
           ))}
         </nav>
       </div>
 
       {mobileOpen ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close menu"
-            className="fixed inset-0 top-16 z-40 bg-[#0a1210]/45 backdrop-blur-sm md:hidden"
-            onClick={() => setActive(false)}
-          />
-          <nav className="glass-plate fixed inset-x-0 top-16 z-50 flex max-h-[calc(100svh-4rem)] flex-col gap-1 overflow-y-auto rounded-none border-x-0 border-b-0 px-5 py-6 shadow-[0_24px_64px_rgba(0,0,0,0.55)] md:hidden">
+          <nav
+            aria-label="Site"
+            className="fixed inset-x-0 bottom-0 top-16 z-50 flex flex-col overflow-y-auto bg-[#0a1210] px-6 pb-10 pt-4 md:hidden"
+          >
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.link}
                 scroll={false}
                 onClick={() => setActive(false)}
-                className={navLinkClass}
+                className="flex min-h-[3.5rem] items-center border-b border-white/10 font-display text-2xl text-text transition hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 {item.name}
               </Link>
             ))}
           </nav>
-        </>
       ) : null}
     </header>
   )
